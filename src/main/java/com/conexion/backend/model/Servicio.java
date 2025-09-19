@@ -42,5 +42,5 @@ public class Servicio {
     private BigDecimal descuentoMonto;
     
     @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Pago> pagos;
+    private Set<Pago> pagos;
 }
