@@ -1,5 +1,4 @@
-package com.conexion.backend.service;
-
+package com.conexion.backend.service.service;
 import com.conexion.backend.dto.ClienteDTO;
 import com.conexion.backend.model.Cliente;
 import com.conexion.backend.repository.ClienteRepository;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ClienteService {
+public class ClienteService{
 
     private final ClienteRepository clienteRepository;
     private final MapperService mapper; // Servicio de mapeo (se definirá más adelante)

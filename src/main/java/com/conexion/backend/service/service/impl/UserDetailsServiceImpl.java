@@ -1,4 +1,4 @@
-package com.conexion.backend.service.impl;
+package com.conexion.backend.service.service.impl;
 
 import com.conexion.backend.model.Usuario;
 import com.conexion.backend.repository.UsuarioRepository;

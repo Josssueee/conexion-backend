@@ -1,4 +1,4 @@
-package com.conexion.backend.service;
+package com.conexion.backend.service.service;
 
 import com.conexion.backend.dto.*;
 import com.conexion.backend.model.*;

@@ -2,7 +2,8 @@ package com.conexion.backend.controller;
 
 import com.conexion.backend.dto.ApiResponseDTO;
 import com.conexion.backend.dto.ClienteDTO;
-import com.conexion.backend.service.ClienteService;
+import com.conexion.backend.service.service.ClienteService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
