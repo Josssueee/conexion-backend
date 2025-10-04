@@ -2,7 +2,7 @@ package com.conexion.backend.controller;
 
 import com.conexion.backend.dto.ApiResponseDTO;
 import com.conexion.backend.dto.PagoDTO;
-import com.conexion.backend.service.PagoService;
+import com.conexion.backend.service.service.PagoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
