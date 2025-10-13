@@ -1,48 +1,67 @@
 package com.conexion.backend.controller;
 
-import com.conexion.backend.dto.LoginRequest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.*;
+  import com.conexion.backend.dto.AuthResponse;
+  import com.conexion.backend.dto.LoginRequest;
+  import com.conexion.backend.dto.RegisterRequest;
+  import com.conexion.backend.service.service.UsuarioService;
+  import com.conexion.backend.util.JwtUtils;
+  import org.springframework.http.ResponseEntity;
+  import org.springframework.security.authentication.AuthenticationManager;
+  import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+  import org.springframework.security.core.AuthenticationException;
+  import org.springframework.security.core.userdetails.UserDetails;
+  import org.springframework.security.core.userdetails.UserDetailsService;
+  import org.springframework.security.core.userdetails.UsernameNotFoundException;
+  import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/auth")
-public class AuthController {
+  @RestController
+  @RequestMapping("/api/auth")
+  public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
+      private final AuthenticationManager authenticationManager;
+      private final UserDetailsService userDetailsService;
+      private final UsuarioService usuarioService; // Servicio para registrar usuarios
+      private final JwtUtils jwtUtils;
 
-    // AuthenticationManager no es un bean simple, requiere un Provider, 
-    // lo inyectamos aquí para delegarle el proceso de login.
-    public AuthController(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
+      public AuthController(
+              AuthenticationManager authenticationManager,
+              UserDetailsService userDetailsService,
+              UsuarioService usuarioService, // Inyectar servicio
+              JwtUtils jwtUtils
+      ) {
+          this.authenticationManager = authenticationManager;
+          this.userDetailsService = userDetailsService;
+          this.usuarioService = usuarioService;
+          this.jwtUtils = jwtUtils;
+      }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        try {
-            // 1. Crear el objeto de autenticación con las credenciales
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getNombreUsuario(),
-                            loginRequest.getContrasena()
-                    )
-            );
-            
-            // Si la autenticación es exitosa, Spring Security actualiza el contexto.
-            // Aquí, típicamente se genera un JWT, pero por ahora solo retornamos éxito.
-            
-            return ResponseEntity.ok("Login exitoso para el usuario: " + authentication.getName());
+      @PostMapping("/register")
+      public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest registerRequest) {
+          usuarioService.registerUser(registerRequest);
+          // Devolvemos una respuesta simple de éxito
+          return ResponseEntity.ok(new AuthResponse(null, registerRequest.getUsername(), "Usuario registrado exitosamente."));
+      }
 
-        } catch (UsernameNotFoundException e) {
-            // Captura si el UserDetailsService no encuentra el usuario
-            return ResponseEntity.status(401).body("Usuario no encontrado.");
-        } catch (AuthenticationException e) {
-            // Captura cualquier otra falla de autenticación (ej: contraseña incorrecta)
-            return ResponseEntity.status(401).body("Credenciales inválidas.");
-        }
-    }
-}
+      @PostMapping("/login")
+      public ResponseEntity<AuthResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
+          try {
+              authenticationManager.authenticate(
+                      new UsernamePasswordAuthenticationToken(
+                              loginRequest.getUsername(),
+                              loginRequest.getPassword()
+                      )
+              );
+
+              final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+              final String jwt = jwtUtils.generateToken(userDetails);
+
+              return ResponseEntity.ok(new AuthResponse(jwt, userDetails.getUsername(), "Autenticación exitosa."));
+
+          } catch (UsernameNotFoundException e) {
+              return ResponseEntity.status(401).body(new AuthResponse(null, null, "Usuario no encontrado."));
+
+          } catch (AuthenticationException e) {
+              return ResponseEntity.status(401).body(new AuthResponse(null, null, "Credenciales inválidas."));
+          }
+      }
+  }

@@ -1,5 +1,8 @@
 package com.conexion.backend.service.service;
+
 import com.conexion.backend.dto.ClienteDTO;
+import com.conexion.backend.exception.BusinessLogicException;
+import com.conexion.backend.exception.ResourceNotFoundException;
 import com.conexion.backend.model.Cliente;
 import com.conexion.backend.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +29,11 @@ public class ClienteService{
     public ClienteDTO registrarCliente(ClienteDTO clienteDTO) {
         // Regla de Negocio: Validar que el DPI no exista
         if (clienteRepository.existsByDpi(clienteDTO.getDpi())) {
-            throw new RuntimeException("El DPI ya está registrado.");
+            throw new BusinessLogicException("El DPI ya está registrado.");
         }
         // Regla de Negocio: Validar que el teléfono no exista
         if (clienteRepository.existsByTelefono(clienteDTO.getTelefono())) {
-            throw new RuntimeException("El teléfono ya está registrado.");
+            throw new BusinessLogicException("El teléfono ya está registrado.");
         }
 
         Cliente cliente = mapper.toClienteEntity(clienteDTO);
@@ -45,7 +48,7 @@ public class ClienteService{
     @Transactional
     public ClienteDTO actualizarCliente(Integer id, ClienteDTO clienteDTO) {
         Cliente clienteExistente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con ID: " + id));
 
         // Actualizar solo los campos permitidos
         clienteExistente.setNombre(clienteDTO.getNombre());
@@ -71,7 +74,7 @@ public class ClienteService{
     @Transactional(readOnly = true)
     public ClienteDTO getClienteCompleto(Integer id) {
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con ID: " + id));
         
         // Mapea la entidad con sus colecciones (Servicios)
         return mapper.toClienteDTOConServicios(cliente);
@@ -81,7 +84,7 @@ public class ClienteService{
     @Transactional
     public void eliminarClienteLogico(Integer id) {
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con ID: " + id));
         
         // Regla de Negocio: Solo se puede inactivar si no tiene servicios activos (opcional, pero buena práctica)
         cliente.setEstadoCliente("INACTIVO");

@@ -1,42 +1,54 @@
 package com.conexion.backend.service.service;
 
+import com.conexion.backend.dto.RegisterRequest;
+import com.conexion.backend.exception.BusinessLogicException;
+import com.conexion.backend.model.Rol;
 import com.conexion.backend.model.Usuario;
+import com.conexion.backend.repository.RolRepository;
 import com.conexion.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder; // Necesario para cifrar contraseñas
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Lógica de negocio para la gestión de Usuarios.
- */
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RolRepository rolRepository; // Repositorio para buscar roles
 
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, RolRepository rolRepository) {
         this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder; // Inyectamos el codificador de contraseñas
+        this.passwordEncoder = passwordEncoder;
+        this.rolRepository = rolRepository;
     }
 
-    /**
-     * Guarda un nuevo usuario o actualiza uno existente.
-     * Cifra la contraseña antes de guardar.
-     */
-    public Usuario save(Usuario usuario) {
-        // Cifrar la contraseña si es nueva o ha cambiado
-        if (usuario.getContrasena() != null && !usuario.getContrasena().isEmpty()) {
-            // Nota: Usamos NoOpPasswordEncoder temporalmente, que no cifra.
-            // Si pasas a BCrypt, aquí se cifraría.
-            // Para el CRUD, simplemente lo guardaremos. 
-            // Como usamos NoOpPasswordEncoder, no ciframos aquí.
+    public Usuario registerUser(RegisterRequest request) {
+        // 1. Validar que el nombre de usuario no exista
+        if (usuarioRepository.findByNombreUsuario(request.getUsername()).isPresent()) {
+            throw new BusinessLogicException("El nombre de usuario ya existe.");
         }
-        return usuarioRepository.save(usuario);
+
+        // 2. Buscar el rol en la base de datos
+        Rol userRole = rolRepository.findByNombreRol(request.getRole())
+                .orElseThrow(() -> new BusinessLogicException("El rol especificado no existe."));
+
+        // 3. Crear la nueva entidad de Usuario
+        Usuario newUser = new Usuario();
+        newUser.setNombreUsuario(request.getUsername());
+        newUser.setNombre(request.getUsername()); // Añadido para cumplir con la restricción NOT NULL
+        newUser.setApellido(request.getUsername()); // Añadido para cumplir con la restricción NOT NULL
+        
+        // 4. Cifrar y establecer la contraseña
+        newUser.setContrasena(passwordEncoder.encode(request.getPassword()));
+        newUser.setRol(userRole);
+
+        // 5. Guardar el nuevo usuario en la BD
+        return usuarioRepository.save(newUser);
     }
 
     public List<Usuario> findAll() {
