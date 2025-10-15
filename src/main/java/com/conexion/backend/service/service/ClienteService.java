@@ -55,10 +55,18 @@ public class ClienteService{
         clienteExistente.setApellido(clienteDTO.getApellido());
         clienteExistente.setTelefono(clienteDTO.getTelefono());
         clienteExistente.setDireccion(clienteDTO.getDireccion());
+        clienteExistente.setEstadoCliente(clienteDTO.getEstadoCliente()); // <-- LÍNEA AÑADIDA
         // El DPI generalmente no se actualiza, pero se puede incluir si es un error tipográfico
         
         Cliente actualizado = clienteRepository.save(clienteExistente);
         return mapper.toClienteDTO(actualizado);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClienteDTO> findAll() {
+        return clienteRepository.findAll().stream()
+                .map(mapper::toClienteDTO)
+                .collect(Collectors.toList());
     }
     
     // UC05.01: Buscar clientes por nombre, DPI o teléfono

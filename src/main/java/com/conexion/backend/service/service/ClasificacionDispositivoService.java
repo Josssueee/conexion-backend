@@ -1,57 +1,63 @@
 package com.conexion.backend.service.service;
 
+import com.conexion.backend.dto.ClasificacionDispositivoDTO;
+import com.conexion.backend.exception.ResourceNotFoundException;
 import com.conexion.backend.model.ClasificacionDispositivo;
 import com.conexion.backend.repository.ClasificacionDispositivoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-/**
- * Lógica de negocio para gestionar el catálogo de ClasificacionDispositivo.
- */
 @Service
 public class ClasificacionDispositivoService {
 
-    private final ClasificacionDispositivoRepository repository;
-
     @Autowired
-    public ClasificacionDispositivoService(ClasificacionDispositivoRepository repository) {
-        this.repository = repository;
+    private ClasificacionDispositivoRepository repository;
+
+    private ClasificacionDispositivoDTO toDTO(ClasificacionDispositivo entity) {
+        ClasificacionDispositivoDTO dto = new ClasificacionDispositivoDTO();
+        dto.setIdClasificacion(entity.getIdClasificacion());
+        dto.setNombreClasificacion(entity.getNombreClasificacion());
+        return dto;
     }
 
-    /**
-     * Guarda una nueva clasificación o actualiza una existente.
-     * @param clasificacion El objeto ClasificacionDispositivo a guardar.
-     * @return La clasificación guardada.
-     */
-    public ClasificacionDispositivo save(ClasificacionDispositivo clasificacion) {
-        return repository.save(clasificacion);
+    private ClasificacionDispositivo toEntity(ClasificacionDispositivoDTO dto) {
+        ClasificacionDispositivo entity = new ClasificacionDispositivo();
+        entity.setIdClasificacion(dto.getIdClasificacion());
+        entity.setNombreClasificacion(dto.getNombreClasificacion());
+        return entity;
     }
 
-    /**
-     * Obtiene todas las clasificaciones.
-     * @return Una lista de todas las clasificaciones de dispositivos.
-     */
-    public List<ClasificacionDispositivo> findAll() {
-        return repository.findAll();
+    public List<ClasificacionDispositivoDTO> findAll() {
+        return repository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    /**
-     * Obtiene una clasificación por su ID.
-     * @param id El ID de la clasificación.
-     * @return Un Optional que contiene la clasificación, o vacío si no se encuentra.
-     */
-    public Optional<ClasificacionDispositivo> findById(Integer id) {
-        return repository.findById(id);
+    public ClasificacionDispositivoDTO findById(Integer id) {
+        ClasificacionDispositivo entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Clasificación no encontrada con id: " + id));
+        return toDTO(entity);
     }
 
-    /**
-     * Elimina una clasificación por su ID.
-     * @param id El ID de la clasificación a eliminar.
-     */
+    public ClasificacionDispositivoDTO save(ClasificacionDispositivoDTO dto) {
+        ClasificacionDispositivo entity = toEntity(dto);
+        entity = repository.save(entity);
+        return toDTO(entity);
+    }
+
+    public ClasificacionDispositivoDTO update(Integer id, ClasificacionDispositivoDTO dto) {
+        ClasificacionDispositivo existingEntity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Clasificación no encontrada con id: " + id));
+        existingEntity.setNombreClasificacion(dto.getNombreClasificacion());
+        ClasificacionDispositivo updatedEntity = repository.save(existingEntity);
+        return toDTO(updatedEntity);
+    }
+
     public void deleteById(Integer id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("Clasificación no encontrada con id: " + id);
+        }
         repository.deleteById(id);
     }
 }

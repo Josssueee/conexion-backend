@@ -37,19 +37,23 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 
                 // 3. Configurar la autorización de peticiones (¡Ajuste CLAVE aquí!)
-                .authorizeHttpRequests(auth -> auth
-                        // Permite acceso libre a la autenticación (login)
-                        .requestMatchers("/api/auth/**").permitAll()
-                        
-                        // REGLA CORREGIDA 1: Permite GET /api/clientes a ADMINISTRADOR y TECNICO
-                        .requestMatchers(HttpMethod.GET, "/api/clientes").hasAnyAuthority("ADMINISTRADOR", "TECNICO")
-                        
-                        // REGLA CORREGIDA 2: Solo POST /api/clientes a ADMINISTRADOR
-                        .requestMatchers(HttpMethod.POST, "/api/clientes").hasAuthority("ADMINISTRADOR")
-                        
-                        // Requerir autenticación para cualquier otra petición no especificada
-                        .anyRequest().authenticated()
-                )
+                                .authorizeHttpRequests(auth -> auth
+                                        // Endpoints públicos
+                                        .requestMatchers("/", "/index.html", "/static/**").permitAll()
+                                        .requestMatchers("/api/auth/**").permitAll()
+                
+                                        // Reglas de LECTURA (GET) para ambos roles
+                                        .requestMatchers(HttpMethod.GET, "/api/usuarios/**", "/api/clientes/**", "/api/planes/**", "/api/clasificaciones/**", "/api/dispositivos/**", "/api/servicios/**", "/api/pagos/**").hasAnyAuthority("ADMINISTRADOR", "TECNICO")
+                
+                                        // Reglas de ESCRITURA (POST, PUT, DELETE, PATCH) solo para ADMIN
+                                        .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority("ADMINISTRADOR")
+                                        .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority("ADMINISTRADOR")
+                                        .requestMatchers(HttpMethod.PATCH, "/api/**").hasAuthority("ADMINISTRADOR")
+                                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority("ADMINISTRADOR")
+                                        
+                                        // Cualquier otra petición requiere autenticación
+                                        .anyRequest().authenticated()
+                                )
 
                 // 4. Configurar gestión de sesiones como SIN ESTADO (STATELLESS)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

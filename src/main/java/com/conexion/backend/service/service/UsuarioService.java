@@ -62,4 +62,33 @@ public class UsuarioService {
     public void deleteById(Integer id) {
         usuarioRepository.deleteById(id);
     }
+
+    public Usuario updateUser(Integer id, RegisterRequest request) {
+        // 1. Buscar el usuario existente
+        Usuario existingUser = usuarioRepository.findById(id)
+                .orElseThrow(() -> new BusinessLogicException("Usuario no encontrado."));
+
+        // 2. Validar si el nuevo nombre de usuario ya está en uso por otro usuario
+        usuarioRepository.findByNombreUsuario(request.getUsername()).ifPresent(user -> {
+            if (!user.getIdUsuario().equals(id)) {
+                throw new BusinessLogicException("El nuevo nombre de usuario ya está en uso.");
+            }
+        });
+
+        // 3. Actualizar el nombre de usuario
+        existingUser.setNombreUsuario(request.getUsername());
+
+        // 4. Actualizar la contraseña solo si se proporciona una nueva
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            existingUser.setContrasena(passwordEncoder.encode(request.getPassword()));
+        }
+
+        // 5. Actualizar el rol
+        Rol userRole = rolRepository.findByNombreRol(request.getRole())
+                .orElseThrow(() -> new BusinessLogicException("El rol especificado no existe."));
+        existingUser.setRol(userRole);
+
+        // 6. Guardar los cambios
+        return usuarioRepository.save(existingUser);
+    }
 }

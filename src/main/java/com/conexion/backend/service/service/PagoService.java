@@ -42,6 +42,7 @@ public class PagoService {
         Pago pago = mapper.toPagoEntity(pagoDTO);
         pago.setServicio(servicio);
         pago.setFechaPago(new Date());
+        pago.setEstadoPago("REALIZADO"); // <-- AÑADIDO: Estado inicial
 
         Pago nuevoPago = pagoRepository.save(pago);
         
@@ -54,6 +55,24 @@ public class PagoService {
         return mapper.toPagoDTO(nuevoPago);
     }
 
+    @Transactional
+    public PagoDTO anularPago(Integer id) {
+        Pago pago = pagoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pago no encontrado."));
+        pago.setEstadoPago("ANULADO");
+        // Opcional: Lógica para revertir el efecto del pago en el servicio.
+        // Por simplicidad, aquí solo se anula el pago.
+        return mapper.toPagoDTO(pagoRepository.save(pago));
+    }
+
+    @Transactional
+    public PagoDTO updateComentario(Integer id, String comentario) {
+        Pago pago = pagoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pago no encontrado."));
+        pago.setComentario(comentario);
+        return mapper.toPagoDTO(pagoRepository.save(pago));
+    }
+
     // UC04.02: Consultar el historial de pagos de un cliente (por ID de servicio)
     @Transactional(readOnly = true)
     public List<PagoDTO> getHistorialPagosPorServicio(Integer idServicio) {
@@ -61,5 +80,17 @@ public class PagoService {
         return pagos.stream()
                 .map(mapper::toPagoDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<PagoDTO> findAll() {
+        return pagoRepository.findAll().stream()
+                .map(mapper::toPagoDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<PagoDTO> search(String query) {
+        return pagoRepository.findByServicioClienteNombreContainingIgnoreCaseOrComentarioContainingIgnoreCase(query, query)
+                .stream().map(mapper::toPagoDTO).collect(Collectors.toList());
     }
 }
