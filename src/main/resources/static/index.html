@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexión - Gestión de Internet</title>
+    <!-- Incluye Tailwind CSS para un estilo rápido y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .screen.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+
+    <!-- Contenedor principal de la aplicación -->
+    <div class="container bg-white rounded-xl shadow-lg p-6 md:p-10">
+
+        <!-- Pantalla de inicio de sesión -->
+        <div id="login-screen" class="screen active">
+            <div class="flex flex-col items-center justify-center min-h-screen">
+                <div class="w-full max-w-sm bg-gray-50 rounded-lg shadow-md p-6">
+                    <h1 class="text-4xl font-bold text-center mb-4 text-gray-800">Conexión</h1>
+                    <h2 class="text-xl text-center mb-8 text-gray-600">Gestión de Internet</h2>
+                    <form>
+                        <div class="mb-4">
+                            <label for="username" class="block text-gray-700 font-medium mb-2">Usuario</label>
+                            <input type="text" id="username" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ingrese su usuario">
+                        </div>
+                        <div class="mb-6">
+                            <label for="password" class="block text-gray-700 font-medium mb-2">Contraseña</label>
+                            <input type="password" id="password" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ingrese su contraseña">
+                        </div>
+                        <button type="button" onclick="handleLogin()" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                            Ingresar
+                        </button>
+                    </form>
+                    <div id="login-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla del Dashboard (Menú Principal) -->
+        <div id="dashboard-screen" class="screen">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Menú Principal</h1>
+                <button onclick="handleLogout()" class="bg-red-600 text-white font-bold py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">Cerrar Sesión</button>
+            </div>
+            <p class="text-lg text-gray-600 mb-8">Selecciona una opción para gestionar la aplicación.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <button onclick="loadUsersAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700 transition duration-300">
+                    <span class="text-3xl mb-2">🧑‍🤝‍🧑</span>
+                    Gestión de Usuarios
+                </button>
+                <button onclick="loadClientesAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-green-600 text-white font-bold rounded-xl shadow-md hover:bg-green-700 transition duration-300">
+                    <span class="text-3xl mb-2">👤</span>
+                    Gestión de Clientes
+                </button>
+                <button onclick="loadPlansAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-yellow-600 text-white font-bold rounded-xl shadow-md hover:bg-yellow-700 transition duration-300">
+                    <span class="text-3xl mb-2">📜</span>
+                    Gestión de Planes
+                </button>
+                <button onclick="loadClasificacionesAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-indigo-600 text-white font-bold rounded-xl shadow-md hover:bg-indigo-700 transition duration-300">
+                    <span class="text-3xl mb-2">🗂️</span>
+                    Clasificación de Dispositivos
+                </button>
+                <button onclick="loadDispositivosAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-red-600 text-white font-bold rounded-xl shadow-md hover:bg-red-700 transition duration-300">
+                    <span class="text-3xl mb-2">📡</span>
+                    Gestión de Dispositivos
+                </button>
+                <button onclick="loadServiciosAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-purple-600 text-white font-bold rounded-xl shadow-md hover:bg-purple-700 transition duration-300">
+                    <span class="text-3xl mb-2">🌐</span>
+                    Gestión de Servicios
+                </button>
+                <button onclick="loadPagosAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-pink-600 text-white font-bold rounded-xl shadow-md hover:bg-pink-700 transition duration-300">
+                    <span class="text-3xl mb-2">💰</span>
+                    Registro de Pagos
+                </button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Gestión de Usuarios -->
+        <div id="users-screen" class="screen">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Gestión de Usuarios</h1>
+                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Crear/Editar Usuario</h2>
+                <form id="user-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                        <input type="text" id="user-form-firstname" class="w-full mt-1 px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" disabled>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Apellido</label>
+                        <input type="text" id="user-form-lastname" class="w-full mt-1 px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" disabled>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nombre de Usuario</label>
+                        <input type="text" id="user-form-username" class="w-full mt-1 px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+                        <input type="password" id="user-form-password" class="w-full mt-1 px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Rol</label>
+                        <select id="user-form-role" class="w-full mt-1 px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="ADMINISTRADOR">Administrador</option>
+                            <option value="TECNICO">Técnico</option>
+                        </select>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button id="user-form-button" type="button" onclick="handleSaveUser()" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">Guardar Usuario</button>
+                        <button id="cancel-edit-button" type="button" onclick="cancelEdit()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar Edición</button>
+                    </div>
+                </form>
+                <div id="user-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
+            </div>
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Listado de Usuarios</h2>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <tbody id="user-list-body" class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-6 py-4">1</td><td class="px-6 py-4">Admin Principal</td><td class="px-6 py-4">admin</td><td class="px-6 py-4">Administrador</td><td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-900 mr-2">Editar</button><button class="text-red-600 hover:text-red-900">Eliminar</button></td></tr>
+                        <tr><td class="px-6 py-4">2</td><td class="px-6 py-4">Técnico A</td><td class="px-6 py-4">tecnico1</td><td class="px-6 py-4">Técnico</td><td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-900 mr-2">Editar</button><button class="text-red-600 hover:text-red-900">Eliminar</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pantalla de Gestión de Clientes -->
+        <div id="clients-screen" class="screen">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Gestión de Clientes</h1>
+                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Crear/Editar Cliente</h2>
+                <form id="cliente-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label class="block text-sm font-medium text-gray-700">Nombre</label><input type="text" id="cliente-form-nombre" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Apellido</label><input type="text" id="cliente-form-apellido" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Teléfono</label><input type="text" id="cliente-form-telefono" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Dirección</label><input type="text" id="cliente-form-direccion" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">DPI</label><input type="text" id="cliente-form-dpi" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Estado</label><select id="cliente-form-estado" class="w-full mt-1 px-3 py-2 border rounded-md"><option value="ACTIVO">Activo</option><option value="INACTIVO">Inactivo</option></select></div>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button id="cliente-form-button" type="button" onclick="handleSaveCliente()" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 transition duration-300">Guardar Cliente</button>
+                        <button id="cancel-edit-cliente-button" type="button" onclick="cancelEditCliente()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar</button>
+                    </div>
+                </form>
+                <div id="cliente-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
+            </div>
+
+            <!-- Formulario de Búsqueda -->
+            <div class="mb-4">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Buscar Clientes</h2>
+                <div class="flex space-x-2">
+                    <input type="text" id="cliente-search-query" class="w-full px-3 py-2 border rounded-md" placeholder="Buscar por nombre, DPI o teléfono...">
+                    <button onclick="handleSearchClientes()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Buscar</button>
+                    <button onclick="loadClientes()" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500">Limpiar</button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Listado de Clientes</h2>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DPI</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
+                    </thead>
+                    <tbody id="cliente-list-body" class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-6 py-4">101</td><td class="px-6 py-4">Juan Pérez</td><td class="px-6 py-4">123456789</td><td class="px-6 py-4 text-green-600">Activo</td><td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-900 mr-2">Ver</button><button class="text-red-600 hover:text-red-900">Eliminar</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pantalla de Gestión de Planes -->
+        <div id="plans-screen" class="screen">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Gestión de Planes</h1>
+                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Crear/Editar Plan</h2>
+                <form id="plan-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nombre del Plan</label>
+                        <input type="text" id="plan-form-nombre" class="w-full mt-1 px-3 py-2 border rounded-md">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Velocidad</label>
+                        <input type="text" id="plan-form-velocidad" class="w-full mt-1 px-3 py-2 border rounded-md" placeholder="Ej: 50 Mbps">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Costo Mensual</label>
+                        <input type="number" id="plan-form-costo" class="w-full mt-1 px-3 py-2 border rounded-md">
+                    </div>
+                    <div class="flex space-x-4">
+                        <button id="plan-form-button" type="button" onclick="handleSavePlan()" class="w-full bg-yellow-600 text-white font-bold py-2 px-4 rounded-md hover:bg-yellow-700 transition duration-300">Guardar Plan</button>
+                        <button id="cancel-edit-plan-button" type="button" onclick="cancelEditPlan()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar</button>
+                    </div>
+                </form>
+                <div id="plan-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
+            </div>
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Listado de Planes</h2>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Velocidad</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Costo</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
+                    </thead>
+                    <tbody id="plan-list-body" class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-6 py-4">PL01</td><td class="px-6 py-4">Plan Básico</td><td class="px-6 py-4">20 Mbps</td><td class="px-6 py-4">Q 150.00</td><td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-900">Editar</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pantalla de Clasificación de Dispositivos -->
+        <div id="device-class-screen" class="screen">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Clasificación de Dispositivos</h1>
+                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Nueva/Editar Clasificación</h2>
+                <form id="clasificacion-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nombre de la Clasificación</label>
+                        <input type="text" id="clasificacion-form-nombre" class="w-full mt-1 px-3 py-2 border rounded-md">
+                    </div>
+                    <div class="flex space-x-4">
+                        <button id="clasificacion-form-button" type="button" onclick="handleSaveClasificacion()" class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300">Guardar</button>
+                        <button id="cancel-edit-clasificacion-button" type="button" onclick="cancelEditClasificacion()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar</button>
+                    </div>
+                </form>
+                <div id="clasificacion-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
+            </div>
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Clasificaciones Existentes</h2>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
+                    </thead>
+                    <tbody id="clasificacion-list-body" class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-6 py-4">1</td><td class="px-6 py-4">Antena</td></tr>
+                        <tr><td class="px-6 py-4">2</td><td class="px-6 py-4">Router</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pantalla de Gestión de Dispositivos -->
+        <div id="devices-screen" class="screen">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Gestión de Dispositivos</h1>
+                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Crear/Editar Dispositivo</h2>
+                <form id="dispositivo-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label class="block text-sm font-medium text-gray-700">Modelo</label><input type="text" id="dispositivo-form-modelo" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Dirección MAC</label><input type="text" id="dispositivo-form-mac" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">IP Local</label><input type="text" id="dispositivo-form-ip" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Contraseña WiFi</label><input type="text" id="dispositivo-form-wifi" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">SSID</label><input type="text" id="dispositivo-form-ssid" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Clasificación</label><select id="dispositivo-form-clasificacion" class="w-full mt-1 px-3 py-2 border rounded-md"></select></div>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button id="dispositivo-form-button" type="button" onclick="handleSaveDispositivo()" class="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">Guardar Dispositivo</button>
+                        <button id="cancel-edit-dispositivo-button" type="button" onclick="cancelEditDispositivo()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar</button>
+                    </div>
+                </form>
+                <div id="dispositivo-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
+            </div>
+
+            <!-- Formulario de Búsqueda -->
+            <div class="mb-4">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Buscar Dispositivos</h2>
+                <div class="flex space-x-2">
+                    <input type="text" id="dispositivo-search-query" class="w-full px-3 py-2 border rounded-md" placeholder="Buscar por modelo o MAC...">
+                    <button onclick="handleSearchDispositivos()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Buscar</button>
+                    <button onclick="loadDispositivos()" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500">Limpiar</button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Listado de Dispositivos</h2>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección MAC</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clasificación</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
+                    </thead>
+                    <tbody id="dispositivo-list-body" class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-6 py-4">D01</td><td class="px-6 py-4">Router XYZ</td><td class="px-6 py-4">00:1A:2B:3C:4D:5E</td><td class="px-6 py-4">Router</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pantalla de Gestión de Servicios -->
+        <div id="services-screen" class="screen">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Gestión de Servicios</h1>
+                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Crear/Editar Servicio</h2>
+                <form id="servicio-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label class="block text-sm font-medium text-gray-700">Cliente</label><select id="servicio-form-cliente" class="w-full mt-1 px-3 py-2 border rounded-md"></select></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Plan</label><select id="servicio-form-plan" class="w-full mt-1 px-3 py-2 border rounded-md"></select></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Dispositivo</label><select id="servicio-form-dispositivo" class="w-full mt-1 px-3 py-2 border rounded-md"></select></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Fecha de Activación</label><input type="date" id="servicio-form-fecha-activacion" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Próximo Pago</label><input type="date" id="servicio-form-proximo-pago" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Estado</label><select id="servicio-form-estado" class="w-full mt-1 px-3 py-2 border rounded-md"><option value="ACTIVO">Activo</option><option value="SUSPENDIDO">Suspendido</option></select></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Monto de Descuento</label><input type="number" id="servicio-form-descuento" class="w-full mt-1 px-3 py-2 border rounded-md" value="0"></div>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button id="servicio-form-button" type="button" onclick="handleSaveServicio()" class="w-full bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition duration-300">Guardar Servicio</button>
+                        <button id="cancel-edit-servicio-button" type="button" onclick="cancelEditServicio()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar</button>
+                    </div>
+                </form>
+                <div id="servicio-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
+            </div>
+
+            <!-- Formulario de Búsqueda -->
+            <div class="mb-4">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Buscar Servicios</h2>
+                <div class="flex space-x-2">
+                    <input type="text" id="servicio-search-query" class="w-full px-3 py-2 border rounded-md" placeholder="Buscar por cliente o MAC...">
+                    <button onclick="handleSearchServicios()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Buscar</button>
+                    <button onclick="loadServicios()" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500">Limpiar</button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Listado de Servicios</h2>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dispositivo</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MAC</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clasificación</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Próximo Pago</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descuento</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
+                    </thead>
+                    <tbody id="servicio-list-body" class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-6 py-4">S01</td><td class="px-6 py-4">Juan Pérez</td><td class="px-6 py-4">Plan Básico</td><td class="px-6 py-4 text-green-600">Activo</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pantalla de Registro de Pagos (código proporcionado por el usuario) -->
+        <div id="payments-screen" class="screen">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Gestión de Pagos</h1>
+                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Registrar Pago</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="cliente_servicio" class="block text-sm font-medium text-gray-700">Cliente y Servicio</label>
+                        <select id="cliente_servicio" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                            <option value="" disabled selected>Seleccione un cliente y servicio</option>
+                            <option value="1">Cliente A (Servicio 1) - Plan de Q100</option>
+                            <option value="2">Cliente B (Servicio 2) - Plan de Q150</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="tipo_pago" class="block text-sm font-medium text-gray-700">Tipo de Pago</label>
+                        <select id="tipo_pago" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                            <option value="mes" selected>Cuota Mensual Completa</option>
+                            <option value="dias">Días Específicos (por suspensión)</option>
+                        </select>
+                    </div>
+                    <div id="dias-container" class="hidden">
+                        <label for="dias_pagar" class="block text-sm font-medium text-gray-700">Días a pagar</label>
+                        <input type="number" id="dias_pagar" name="dias_pagar" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2" placeholder="Ingrese la cantidad de días" min="1">
+                    </div>
+                    <div>
+                        <label for="monto_pagar" class="block text-sm font-medium text-gray-700">Monto a pagar</label>
+                        <input type="text" id="monto_pagar" name="monto_pagar" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 sm:text-sm p-2" readonly>
+                    </div>
+                    <div>
+                        <label for="comentario" class="block text-sm font-medium text-gray-700">Comentario</label>
+                        <textarea id="comentario" name="comentario" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2" placeholder="Escriba un comentario sobre el pago..."></textarea>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <button type="button" onclick="handleRegisterPago()" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Registrar Pago
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulario de Búsqueda -->
+            <div class="mb-4">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Buscar Pagos</h2>
+                <div class="flex space-x-2">
+                    <input type="text" id="pago-search-query" class="w-full px-3 py-2 border rounded-md" placeholder="Buscar por nombre de cliente o comentario...">
+                    <button onclick="handleSearchPagos()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Buscar</button>
+                    <button onclick="loadPagos()" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500">Limpiar</button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Historial de Pagos</h2>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Pago</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comentario</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
+                    </thead>
+                    <tbody id="pago-history-body" class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-6 py-4">PAG001</td><td class="px-6 py-4">01/01/2025</td><td class="px-6 py-4">Q 150.00</td><td class="px-6 py-4">Juan Pérez</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Mensajes de alerta -->
+            <div id="messageBox" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // SCRIPT_REPLACEMENT_MARKER
+        // Variable global para almacenar el token JWT
+        let jwtToken = null;
+
+        // Función para mostrar la pantalla deseada y ocultar las demás
+        function showScreen(screenId) {
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
+        }
+
+        // Función para mostrar mensajes en diferentes partes de la UI
+        function showMessage(element, message, classes) {
+            element.textContent = message;
+            element.className = `${classes} p-4 rounded-md text-center text-sm mt-4`;
+            element.classList.remove('hidden');
+            setTimeout(() => {
+                element.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Función para manejar el inicio de sesión
+        async function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginMessage = document.getElementById('login-message');
+
+            // Validar que los campos no estén vacíos
+            if (!username || !password) {
+                showMessage(loginMessage, 'Por favor, ingrese su usuario y contraseña.', 'bg-yellow-100 text-yellow-700');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Asumiendo que el backend devuelve { "token": "jwt_token_aqui" }
+                    jwtToken = data.token; 
+                    localStorage.setItem('jwtToken', jwtToken); // Guardar token para persistencia
+                    showScreen('dashboard-screen');
+                } else {
+                    // Intentar leer el mensaje de error del backend
+                    const errorData = await response.json().catch(() => ({ message: 'Error de autenticación. Verifique sus credenciales.' }));
+                    showMessage(loginMessage, errorData.message || 'Error de autenticación.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                console.error('Error en el login:', error);
+                showMessage(loginMessage, 'No se pudo conectar con el servidor. Verifique que el backend esté corriendo.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('jwtToken');
+            jwtToken = null;
+            showScreen('login-screen');
+        }
+
+        // Al cargar la página, verificar si hay un token guardado
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('jwtToken');
+            if (token) {
+                jwtToken = token;
+                showScreen('dashboard-screen');
+            }
+        });
+
+        // --- Lógica para la Gestión de Usuarios ---
+
+        async function loadUsers() {
+            const userListBody = document.getElementById('user-list-body');
+            userListBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Cargando...</td></tr>'; // Indicador de carga
+
+            if (!jwtToken) {
+                showMessage(document.getElementById('login-message'), 'Tu sesión ha expirado. Por favor, inicia sesión de nuevo.', 'bg-red-100 text-red-700');
+                showScreen('login-screen');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/usuarios', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                });
+
+                if (response.status === 403) { // Prohibido, el token puede haber expirado
+                    showMessage(document.getElementById('login-message'), 'Tu sesión ha expirado o no tienes permisos. Por favor, inicia sesión de nuevo.', 'bg-red-100 text-red-700');
+                    showScreen('login-screen');
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Error al cargar los usuarios.');
+                }
+
+                const users = await response.json();
+                
+                userListBody.innerHTML = ''; // Limpiar el indicador de carga
+
+                if (users.length === 0) {
+                    userListBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">No se encontraron usuarios.</td></tr>';
+                    return;
+                }
+
+                users.forEach(user => {
+                    const roleName = user.rol ? user.rol.nombreRol : 'Sin rol';
+                    
+                    const row = `
+                        <tr>
+                            <td class="px-6 py-4">${user.idUsuario}</td>
+                            <td class="px-6 py-4">${user.username}</td>
+                            <td class="px-6 py-4">${user.username}</td>
+                            <td class="px-6 py-4">${roleName}</td>
+                            <td class="px-6 py-4">
+                                <button onclick="startEditUser(${user.idUsuario}, '${user.username}', '${roleName}')" class="text-indigo-600 hover:text-indigo-900 mr-2">Editar</button>
+                                <button onclick="handleDeleteUser(${user.idUsuario})" class="text-red-600 hover:text-red-900">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                    userListBody.innerHTML += row;
+                });
+
+            } catch (error) {
+                console.error('Error en loadUsers:', error);
+                userListBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Error al cargar los datos.</td></tr>';
+            }
+        }
+
+        function loadUsersAndShowScreen() {
+            loadUsers();
+            showScreen('users-screen');
+        }
+
+        // --- Lógica para Gestión de Clientes ---
+        let editingClienteId = null;
+
+        function loadClientesAndShowScreen() {
+            loadClientes(); // Carga todos los clientes al entrar
+            showScreen('clients-screen');
+        }
+
+        function handleSearchClientes() {
+            const query = document.getElementById('cliente-search-query').value;
+            loadClientes(query); // Llama a loadClientes con el término de búsqueda
+        }
+
+        function startEditCliente(cliente) {
+            editingClienteId = cliente.idCliente;
+            document.getElementById('cliente-form-nombre').value = cliente.nombre;
+            document.getElementById('cliente-form-apellido').value = cliente.apellido;
+            document.getElementById('cliente-form-telefono').value = cliente.telefono;
+            document.getElementById('cliente-form-direccion').value = cliente.direccion;
+            document.getElementById('cliente-form-dpi').value = cliente.dpi;
+            document.getElementById('cliente-form-estado').value = cliente.estadoCliente;
+
+            document.getElementById('cliente-form-button').textContent = 'Actualizar Cliente';
+            document.getElementById('cancel-edit-cliente-button').classList.remove('hidden');
+        }
+
+        function cancelEditCliente() {
+            editingClienteId = null;
+            document.getElementById('cliente-form').reset();
+            document.getElementById('cliente-form-button').textContent = 'Guardar Cliente';
+            document.getElementById('cancel-edit-cliente-button').classList.add('hidden');
+        }
+
+        async function handleSaveCliente() {
+            const formMessage = document.getElementById('cliente-form-message');
+            const body = {
+                nombre: document.getElementById('cliente-form-nombre').value,
+                apellido: document.getElementById('cliente-form-apellido').value,
+                telefono: document.getElementById('cliente-form-telefono').value,
+                direccion: document.getElementById('cliente-form-direccion').value,
+                dpi: document.getElementById('cliente-form-dpi').value,
+                estadoCliente: document.getElementById('cliente-form-estado').value
+            };
+
+            if (!body.nombre || !body.apellido || !body.dpi || !body.telefono) {
+                showMessage(formMessage, 'Nombre, Apellido, Teléfono y DPI son requeridos.', 'bg-yellow-100 text-yellow-700');
+                return;
+            }
+
+            const url = editingClienteId ? `/api/clientes/${editingClienteId}` : '/api/clientes';
+            const method = editingClienteId ? 'PUT' : 'POST';
+            if (editingClienteId) body.idCliente = editingClienteId;
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` },
+                    body: JSON.stringify(body)
+                });
+                const result = await response.json(); // La API siempre devuelve un ApiResponseDTO
+
+                if (result.success) {
+                    showMessage(formMessage, result.message, 'bg-green-100 text-green-700');
+                    cancelEditCliente();
+                    await loadClientes();
+                } else {
+                    showMessage(formMessage, result.message || 'Error al guardar el cliente.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function handleDeleteCliente(clienteId) {
+            if (!confirm(`¿Seguro que quieres inactivar al cliente con ID ${clienteId}?`)) return;
+
+            const formMessage = document.getElementById('cliente-form-message');
+            try {
+                const response = await fetch(`/api/clientes/${clienteId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${jwtToken}` }
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage(formMessage, result.message, 'bg-green-100 text-green-700');
+                    await loadClientes();
+                } else {
+                    showMessage(formMessage, result.message || 'Error al eliminar.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function loadClientes(query = '') {
+            const listBody = document.getElementById('cliente-list-body');
+            listBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Cargando...</td></tr>';
+            
+            const url = query ? `/api/clientes/buscar?query=${encodeURIComponent(query)}` : '/api/clientes';
+
+            try {
+                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                const result = await response.json();
+
+                if (!result.success) throw new Error(result.message || 'Error de red.');
+                
+                const data = result.data;
+                listBody.innerHTML = '';
+                if (data.length === 0) {
+                    listBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">No se encontraron clientes.</td></tr>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    const itemDataString = JSON.stringify(item).replace(/'/g, "\\'");
+                    const estadoClass = item.estadoCliente === 'ACTIVO' ? 'text-green-600' : 'text-red-600';
+                    listBody.innerHTML += `
+                        <tr>
+                            <td class="px-6 py-4">${item.idCliente}</td>
+                            <td class="px-6 py-4">${item.nombre} ${item.apellido}</td>
+                            <td class="px-6 py-4">${item.telefono}</td>
+                            <td class="px-6 py-4">${item.direccion}</td>
+                            <td class="px-6 py-4">${item.dpi}</td>
+                            <td class="px-6 py-4 font-bold ${estadoClass}">${item.estadoCliente}</td>
+                            <td class="px-6 py-4">
+                                <button onclick='startEditCliente(${itemDataString})' class="text-indigo-600 hover:text-indigo-900">Editar</button>
+                                <button onclick="handleDeleteCliente(${item.idCliente})" class="text-red-600 hover:text-red-900 ml-2">Inactivar</button>
+                            </td>
+                        </tr>`;
+                });
+            } catch (error) {
+                listBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">${error.message || "Error al cargar datos."}</td></tr>`;
+            }
+        }
+
+        // --- Lógica para la Gestión de Planes ---
+        let editingPlanId = null;
+
+        function loadPlansAndShowScreen() {
+            loadPlans();
+            showScreen('plans-screen');
+        }
+
+        function startEditPlan(plan) {
+            editingPlanId = plan.idPlan;
+            document.getElementById('plan-form-nombre').value = plan.nombrePlan;
+            document.getElementById('plan-form-velocidad').value = plan.velocidad;
+            document.getElementById('plan-form-costo').value = plan.costoMensual;
+
+            document.getElementById('plan-form-button').textContent = 'Actualizar Plan';
+            document.getElementById('cancel-edit-plan-button').classList.remove('hidden');
+        }
+
+        function cancelEditPlan() {
+            editingPlanId = null;
+            document.getElementById('plan-form').reset();
+            document.getElementById('plan-form-button').textContent = 'Guardar Plan';
+            document.getElementById('cancel-edit-plan-button').classList.add('hidden');
+        }
+
+        async function handleSavePlan() {
+            const nombrePlan = document.getElementById('plan-form-nombre').value;
+            const velocidad = document.getElementById('plan-form-velocidad').value;
+            const costoMensual = document.getElementById('plan-form-costo').value;
+            const formMessage = document.getElementById('plan-form-message');
+
+            if (!nombrePlan || !velocidad || !costoMensual) {
+                showMessage(formMessage, 'Todos los campos son requeridos.', 'bg-yellow-100 text-yellow-700');
+                return;
+            }
+
+            const url = editingPlanId ? `/api/planes/${editingPlanId}` : '/api/planes';
+            const method = editingPlanId ? 'PUT' : 'POST';
+
+            const body = { nombrePlan, velocidad, costoMensual };
+            if (editingPlanId) {
+                body.idPlan = editingPlanId;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwtToken}`
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (response.ok) {
+                    const successMessage = editingPlanId ? '¡Plan actualizado!' : '¡Plan creado!';
+                    showMessage(formMessage, successMessage, 'bg-green-100 text-green-700');
+                    cancelEditPlan();
+                    await loadPlans();
+                } else {
+                    const errorData = await response.json();
+                    showMessage(formMessage, errorData.message || 'Error al guardar el plan.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                console.error('Error en handleSavePlan:', error);
+                showMessage(formMessage, 'No se pudo conectar con el servidor.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function handleDeletePlan(planId) {
+            if (!confirm(`¿Estás seguro de eliminar el plan con ID ${planId}?`)) return;
+
+            try {
+                const response = await fetch(`/api/planes/${planId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${jwtToken}` }
+                });
+
+                if (response.ok) {
+                    showMessage(document.getElementById('plan-form-message'), '¡Plan eliminado!', 'bg-green-100 text-green-700');
+                    await loadPlans();
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    showMessage(document.getElementById('plan-form-message'), errorData.message || 'Error al eliminar el plan.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                console.error('Error en handleDeletePlan:', error);
+                showMessage(document.getElementById('plan-form-message'), 'No se pudo conectar con el servidor.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function loadPlans() {
+            const planListBody = document.getElementById('plan-list-body');
+            planListBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Cargando...</td></tr>';
+
+            try {
+                const response = await fetch('/api/planes', {
+                    headers: { 'Authorization': `Bearer ${jwtToken}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al cargar los planes.');
+                }
+
+                const planes = await response.json();
+                planListBody.innerHTML = ''; // Limpiar
+
+                if (planes.length === 0) {
+                    planListBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">No se encontraron planes.</td></tr>';
+                    return;
+                }
+
+                planes.forEach(plan => {
+                    const planDataString = JSON.stringify(plan).replace(/'/g, "\'");
+                    const row = `
+                        <tr>
+                            <td class="px-6 py-4">${plan.idPlan}</td>
+                            <td class="px-6 py-4">${plan.nombrePlan}</td>
+                            <td class="px-6 py-4">${plan.velocidad}</td>
+                            <td class="px-6 py-4">Q${plan.costoMensual.toFixed(2)}</td>
+                            <td class="px-6 py-4">
+                                <button onclick='startEditPlan(${planDataString})' class="text-indigo-600 hover:text-indigo-900">Editar</button>
+                                <button onclick="handleDeletePlan(${plan.idPlan})" class="text-red-600 hover:text-red-900 ml-2">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                    planListBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error en loadPlans:', error);
+            }
+        }
+
+        // --- Lógica para Clasificación de Dispositivos ---
+        let editingClasificacionId = null;
+
+        function loadClasificacionesAndShowScreen() {
+            loadClasificaciones();
+            showScreen('device-class-screen');
+        }
+
+        function startEditClasificacion(clasificacion) {
+            editingClasificacionId = clasificacion.idClasificacion;
+            document.getElementById('clasificacion-form-nombre').value = clasificacion.nombreClasificacion;
+            document.getElementById('clasificacion-form-button').textContent = 'Actualizar';
+            document.getElementById('cancel-edit-clasificacion-button').classList.remove('hidden');
+        }
+
+        function cancelEditClasificacion() {
+            editingClasificacionId = null;
+            document.getElementById('clasificacion-form').reset();
+            document.getElementById('clasificacion-form-button').textContent = 'Guardar';
+            document.getElementById('cancel-edit-clasificacion-button').classList.add('hidden');
+        }
+
+        async function handleSaveClasificacion() {
+            const nombre = document.getElementById('clasificacion-form-nombre').value;
+            const formMessage = document.getElementById('clasificacion-form-message');
+            if (!nombre) {
+                showMessage(formMessage, 'El nombre es requerido.', 'bg-yellow-100 text-yellow-700');
+                return;
+            }
+
+            const url = editingClasificacionId ? `/api/clasificaciones/${editingClasificacionId}` : '/api/clasificaciones';
+            const method = editingClasificacionId ? 'PUT' : 'POST';
+            const body = { nombreClasificacion: nombre };
+            if (editingClasificacionId) body.idClasificacion = editingClasificacionId;
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` },
+                    body: JSON.stringify(body)
+                });
+                if (response.ok) {
+                    showMessage(formMessage, `¡Clasificación ${editingClasificacionId ? 'actualizada' : 'creada'}!`, 'bg-green-100 text-green-700');
+                    cancelEditClasificacion();
+                    await loadClasificaciones();
+                } else {
+                    const error = await response.json();
+                    showMessage(formMessage, error.message || 'Error al guardar.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function handleDeleteClasificacion(id) {
+            if (!confirm(`¿Seguro que quieres eliminar la clasificación con ID ${id}?`)) return;
+
+            try {
+                const response = await fetch(`/api/clasificaciones/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${jwtToken}` }
+                });
+                if (response.ok) {
+                    showMessage(document.getElementById('clasificacion-form-message'), '¡Eliminada con éxito!', 'bg-green-100 text-green-700');
+                    await loadClasificaciones();
+                } else {
+                    const error = await response.json().catch(() => ({}));
+                    showMessage(document.getElementById('clasificacion-form-message'), error.message || 'Error al eliminar.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                showMessage(document.getElementById('clasificacion-form-message'), 'Error de conexión.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function loadClasificaciones() {
+            const listBody = document.getElementById('clasificacion-list-body');
+            listBody.innerHTML = '<tr><td colspan="3" class="text-center py-4">Cargando...</td></tr>';
+            try {
+                const response = await fetch('/api/clasificaciones', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                if (!response.ok) throw new Error('Error de red.');
+                const data = await response.json();
+                listBody.innerHTML = '';
+                if (data.length === 0) {
+                    listBody.innerHTML = '<tr><td colspan="3" class="text-center py-4">No hay clasificaciones.</td></tr>';
+                    return;
+                }
+                data.forEach(item => {
+                    const itemDataString = JSON.stringify(item).replace(/'/g, "\\'");
+                    listBody.innerHTML += `
+                        <tr>
+                            <td class="px-6 py-4">${item.idClasificacion}</td>
+                            <td class="px-6 py-4">${item.nombreClasificacion}</td>
+                            <td class="px-6 py-4">
+                                <button onclick='startEditClasificacion(${itemDataString})' class="text-indigo-600 hover:text-indigo-900">Editar</button>
+                                <button onclick="handleDeleteClasificacion(${item.idClasificacion})" class="text-red-600 hover:text-red-900 ml-2">Eliminar</button>
+                            </td>
+                        </tr>`;
+                });
+            } catch (error) {
+            }
+        }
+
+        // --- Lógica para Gestión de Dispositivos ---
+        let editingDispositivoId = null;
+        let clasificacionesCache = []; // Cache para no recargar las clasificaciones cada vez
+
+        async function loadDispositivosAndShowScreen() {
+            await loadDispositivos();
+            await loadClasificacionesIntoSelect(); // Cargar el dropdown
+            showScreen('devices-screen');
+        }
+
+        function handleSearchDispositivos() {
+            const query = document.getElementById('dispositivo-search-query').value;
+            loadDispositivos(query);
+        }
+
+        async function loadClasificacionesIntoSelect() {
+            const select = document.getElementById('dispositivo-form-clasificacion');
+            if (clasificacionesCache.length === 0) { // Cargar solo si el cache está vacío
+                try {
+                    const response = await fetch('/api/clasificaciones', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                    if (!response.ok) throw new Error('Error de red.');
+                    clasificacionesCache = await response.json();
+                } catch (error) {
+                    console.error("Error cargando clasificaciones:", error);
+                    select.innerHTML = '<option>Error al cargar</option>';
+                    return;
+                }
+            }
+            select.innerHTML = clasificacionesCache.map(c => `<option value="${c.idClasificacion}">${c.nombreClasificacion}</option>`).join('');
+        }
+
+        function startEditDispositivo(dispositivo) {
+            editingDispositivoId = dispositivo.idDispositivo;
+            document.getElementById('dispositivo-form-modelo').value = dispositivo.modelo;
+            document.getElementById('dispositivo-form-mac').value = dispositivo.direccionMac;
+            document.getElementById('dispositivo-form-ip').value = dispositivo.ipLocal;
+            document.getElementById('dispositivo-form-wifi').value = dispositivo.contrasenaWifi;
+            document.getElementById('dispositivo-form-ssid').value = dispositivo.ssid;
+            document.getElementById('dispositivo-form-clasificacion').value = dispositivo.idClasificacion;
+
+            document.getElementById('dispositivo-form-button').textContent = 'Actualizar Dispositivo';
+            document.getElementById('cancel-edit-dispositivo-button').classList.remove('hidden');
+        }
+
+        function cancelEditDispositivo() {
+            editingDispositivoId = null;
+            document.getElementById('dispositivo-form').reset();
+            document.getElementById('dispositivo-form-button').textContent = 'Guardar Dispositivo';
+            document.getElementById('cancel-edit-dispositivo-button').classList.add('hidden');
+        }
+
+        async function handleSaveDispositivo() {
+            const formMessage = document.getElementById('dispositivo-form-message');
+            const idClasificacion = parseInt(document.getElementById('dispositivo-form-clasificacion').value, 10);
+
+            const body = {
+                modelo: document.getElementById('dispositivo-form-modelo').value,
+                direccionMac: document.getElementById('dispositivo-form-mac').value,
+                ipLocal: document.getElementById('dispositivo-form-ip').value,
+                contrasenaWifi: document.getElementById('dispositivo-form-wifi').value,
+                ssid: document.getElementById('dispositivo-form-ssid').value,
+                idClasificacion: idClasificacion
+            };
+
+            if (!body.modelo || !body.direccionMac || isNaN(body.idClasificacion)) {
+                showMessage(formMessage, 'Modelo, MAC y Clasificación son requeridos y deben ser válidos.', 'bg-yellow-100 text-yellow-700');
+                return;
+            }
+
+            const url = editingDispositivoId ? `/api/dispositivos/${editingDispositivoId}` : '/api/dispositivos';
+            const method = editingDispositivoId ? 'PUT' : 'POST';
+            if (editingDispositivoId) body.idDispositivo = editingDispositivoId;
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` },
+                    body: JSON.stringify(body)
+                });
+                if (response.ok) {
+                    showMessage(formMessage, `¡Dispositivo ${editingDispositivoId ? 'actualizado' : 'creado'}!`, 'bg-green-100 text-green-700');
+                    cancelEditDispositivo();
+                    await loadDispositivos();
+                } else {
+                    const error = await response.json();
+                    showMessage(formMessage, error.message || 'Error al guardar.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function handleDeleteDispositivo(id) {
+            if (!confirm(`¿Seguro que quieres eliminar el dispositivo con ID ${id}?`)) return;
+            const formMessage = document.getElementById('dispositivo-form-message');
+            try {
+                const response = await fetch(`/api/dispositivos/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${jwtToken}` }
+                });
+                if (response.ok) {
+                    showMessage(formMessage, '¡Dispositivo eliminado!', 'bg-green-100 text-green-700');
+                    await loadDispositivos();
+                } else {
+                    const error = await response.json().catch(() => ({}));
+                    showMessage(formMessage, error.message || 'Error al eliminar.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function loadDispositivos(query = '') {
+            const listBody = document.getElementById('dispositivo-list-body');
+            listBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Cargando...</td></tr>';
+            
+            const url = query ? `/api/dispositivos/buscar?query=${encodeURIComponent(query)}` : '/api/dispositivos';
+
+            try {
+                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                if (!response.ok) throw new Error('Error de red.');
+                const data = await response.json();
+                listBody.innerHTML = '';
+                if (data.length === 0) {
+                    listBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">No hay dispositivos.</td></tr>';
+                    return;
+                }
+                // Para mostrar el nombre de la clasificación, necesitamos el cache
+                if (clasificacionesCache.length === 0) await loadClasificacionesIntoSelect();
+
+                data.forEach(item => {
+                    const clasificacion = clasificacionesCache.find(c => c.idClasificacion === item.idClasificacion);
+                    const clasificacionNombre = clasificacion ? clasificacion.nombreClasificacion : 'N/A';
+                    const itemDataString = JSON.stringify(item).replace(/'/g, "\\'");
+                    listBody.innerHTML += `
+                        <tr>
+                            <td class="px-6 py-4">${item.idDispositivo}</td>
+                            <td class="px-6 py-4">${item.modelo}</td>
+                            <td class="px-6 py-4">${item.direccionMac}</td>
+                            <td class="px-6 py-4">${clasificacionNombre}</td>
+                            <td class="px-6 py-4">
+                                <button onclick='startEditDispositivo(${itemDataString})' class="text-indigo-600 hover:text-indigo-900">Editar</button>
+                                <button onclick="handleDeleteDispositivo(${item.idDispositivo})" class="text-red-600 hover:text-red-900 ml-2">Eliminar</button>
+                            </td>
+                        </tr>`;
+                });
+            } catch (error) {
+                listBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Error al cargar datos.</td></tr>';
+            }
+        }
+
+                let editingServicioId = null;
+                let clientesCache = [], planesCache = [], dispositivosCache = []; // Caches para los dropdowns
+        
+                        async function loadServiciosAndShowScreen() {
+                            cancelEditServicio(); // Limpiar el formulario
+                            await loadPrerequisitesForServicioForm(); // 1. Cargar prerrequisitos PRIMERO
+                            await loadServicios(); // 2. Cargar servicios DESPUÉS
+                            showScreen('services-screen'); // 3. Mostrar la pantalla
+                        }
+                
+                        function handleSearchServicios() {
+                            const query = document.getElementById('servicio-search-query').value;
+                            loadServicios(query);
+                        }        
+                async function loadPrerequisitesForServicioForm() {
+                    // Cargar Clientes, Planes y Dispositivos en paralelo
+                    const [clientesRes, planesRes, dispositivosRes, clasificacionesRes] = await Promise.all([
+                        fetch('/api/clientes', { headers: { 'Authorization': `Bearer ${jwtToken}` } }),
+                        fetch('/api/planes', { headers: { 'Authorization': `Bearer ${jwtToken}` } }),
+                        fetch('/api/dispositivos', { headers: { 'Authorization': `Bearer ${jwtToken}` } }),
+                        fetch('/api/clasificaciones', { headers: { 'Authorization': `Bearer ${jwtToken}` } })
+                    ]);
+        
+                    if (clientesRes.ok) {
+                        const clientesResult = await clientesRes.json();
+                        clientesCache = clientesResult.data;
+                        const clienteSelect = document.getElementById('servicio-form-cliente');
+                        clienteSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Cliente --</option>' +
+                                                  clientesCache.map(c => `<option value="${c.idCliente}">${c.nombre} ${c.apellido}</option>`).join('');
+                    }
+                    if (planesRes.ok) {
+                        planesCache = await planesRes.json();
+                        const planSelect = document.getElementById('servicio-form-plan');
+                        planSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Plan --</option>' +
+                                               planesCache.map(p => `<option value="${p.idPlan}">${p.nombrePlan}</option>`).join('');
+                    }
+                    if (dispositivosRes.ok) {
+                        dispositivosCache = await dispositivosRes.json();
+                        const dispositivoSelect = document.getElementById('servicio-form-dispositivo');
+                        dispositivoSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Dispositivo --</option>' +
+                                                      dispositivosCache.map(d => `<option value="${d.idDispositivo}">${d.modelo} (${d.direccionMac})</option>`).join('');
+                    }
+                    if (clasificacionesRes.ok) {
+                        clasificacionesCache = await clasificacionesRes.json(); // Guardar en la caché global
+                    }
+                }
+        
+                function startEditServicio(servicio) {
+                    editingServicioId = servicio.idServicio;
+                    document.getElementById('servicio-form-cliente').value = servicio.idCliente;
+                    document.getElementById('servicio-form-plan').value = servicio.plan.idPlan;
+                    document.getElementById('servicio-form-dispositivo').value = servicio.dispositivo.idDispositivo;
+                    document.getElementById('servicio-form-fecha-activacion').value = new Date(servicio.fechaActivacion).toISOString().split('T')[0];
+                    document.getElementById('servicio-form-proximo-pago').value = new Date(servicio.proximoPago).toISOString().split('T')[0];
+                    document.getElementById('servicio-form-estado').value = servicio.estadoServicio;
+                    document.getElementById('servicio-form-descuento').value = servicio.descuentoMonto;
+        
+                    document.getElementById('servicio-form-button').textContent = 'Actualizar Servicio';
+                    document.getElementById('cancel-edit-servicio-button').classList.remove('hidden');
+                }
+        
+                function cancelEditServicio() {
+                    editingServicioId = null;
+                    document.getElementById('servicio-form').reset();
+                    document.getElementById('servicio-form-button').textContent = 'Guardar Servicio';
+                    document.getElementById('cancel-edit-servicio-button').classList.add('hidden');
+                }
+        
+                async function handleSaveServicio() {
+                    const formMessage = document.getElementById('servicio-form-message');
+                    const body = {
+                        idCliente: parseInt(document.getElementById('servicio-form-cliente').value, 10),
+                        idPlan: parseInt(document.getElementById('servicio-form-plan').value, 10),
+                        idDispositivo: parseInt(document.getElementById('servicio-form-dispositivo').value, 10),
+                        fechaActivacion: document.getElementById('servicio-form-fecha-activacion').value,
+                        proximoPago: document.getElementById('servicio-form-proximo-pago').value,
+                        estadoServicio: document.getElementById('servicio-form-estado').value,
+                        descuentoMonto: parseFloat(document.getElementById('servicio-form-descuento').value)
+                    };
+        
+                    if (isNaN(body.idCliente) || isNaN(body.idPlan) || isNaN(body.idDispositivo)) {
+                        showMessage(formMessage, 'Cliente, Plan y Dispositivo son requeridos.', 'bg-yellow-100 text-yellow-700');
+                        return;
+                    }
+        
+                    const url = editingServicioId ? `/api/servicios/${editingServicioId}` : '/api/servicios';
+                    const method = editingServicioId ? 'PUT' : 'POST';
+                    if (editingServicioId) body.idServicio = editingServicioId;
+        
+                    try {
+                        const response = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` }, body: JSON.stringify(body) });
+                        const result = await response.json();
+                        if (result.success) {
+                            showMessage(formMessage, result.message, 'bg-green-100 text-green-700');
+                            cancelEditServicio();
+                            await loadServicios();
+                        } else {
+                            showMessage(formMessage, result.message || 'Error al guardar.', 'bg-red-100 text-red-700');
+                        }
+                    } catch (error) {
+                        showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+                    }
+                }
+        
+                async function handleDeleteServicio(id) {
+                    if (!confirm(`¿Seguro que quieres eliminar el servicio con ID ${id}?`)) return;
+                    const formMessage = document.getElementById('servicio-form-message');
+                    try {
+                        const response = await fetch(`/api/servicios/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                        const result = await response.json();
+                        if (result.success) {
+                            showMessage(formMessage, result.message, 'bg-green-100 text-green-700');
+                            await loadServicios();
+                        } else {
+                            showMessage(formMessage, result.message || 'Error al eliminar.', 'bg-red-100 text-red-700');
+                        }
+                    } catch (error) {
+                        showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+                    }
+                }
+        
+                        async function loadServicios(query = '') {
+                            const listBody = document.getElementById('servicio-list-body');
+                            listBody.innerHTML = '<tr><td colspan="10" class="text-center py-4">Cargando...</td></tr>';
+                            
+                            const url = query ? `/api/servicios/buscar?query=${encodeURIComponent(query)}` : '/api/servicios';
+                
+                            try {
+                                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${jwtToken}` } });                        const result = await response.json();
+                        if (!result.success) throw new Error(result.message || 'Error de red.');
+                        const data = result.data;
+                        listBody.innerHTML = '';
+                        if (data.length === 0) {
+                            listBody.innerHTML = '<tr><td colspan="10" class="text-center py-4">No hay servicios.</td></tr>';
+                            return;
+                        }
+        
+                        data.forEach(item => {
+                            const cliente = clientesCache.find(c => c.idCliente === item.idCliente);
+                            const clienteNombre = cliente ? `${cliente.nombre} ${cliente.apellido}` : 'N/A';
+                            const planNombre = item.plan ? item.plan.nombrePlan : 'N/A';
+                            const dispositivoNombre = item.dispositivo ? item.dispositivo.modelo : 'N/A';
+                            const dispositivoMac = item.dispositivo ? item.dispositivo.direccionMac : 'N/A';
+                            const clasificacion = item.dispositivo && clasificacionesCache.find(c => c.idClasificacion === item.dispositivo.idClasificacion);
+                            const clasificacionNombre = clasificacion ? clasificacion.nombreClasificacion : 'N/A';
+                            const proximoPagoFormateado = new Date(item.proximoPago).toLocaleDateString();
+                            const descuentoFormateado = `Q${item.descuentoMonto.toFixed(2)}`;
+                            const estadoClass = item.estadoServicio === 'ACTIVO' ? 'text-green-600' : 'text-red-600';
+                            const itemDataString = JSON.stringify(item).replace(/'/g, "\\'");
+        
+                            listBody.innerHTML += `
+                                <tr>
+                                    <td class="px-6 py-4">${item.idServicio}</td>
+                                    <td class="px-6 py-4">${clienteNombre}</td>
+                                    <td class="px-6 py-4">${planNombre}</td>
+                                    <td class="px-6 py-4">${dispositivoNombre}</td>
+                                    <td class="px-6 py-4">${dispositivoMac}</td>
+                                    <td class="px-6 py-4">${clasificacionNombre}</td>
+                                    <td class="px-6 py-4">${proximoPagoFormateado}</td>
+                                    <td class="px-6 py-4">${descuentoFormateado}</td>
+                                    <td class="px-6 py-4 font-bold ${estadoClass}">${item.estadoServicio}</td>
+                                    <td class="px-6 py-4">
+                                        <button onclick='startEditServicio(${itemDataString})' class="text-indigo-600 hover:text-indigo-900">Editar</button>
+                                        <button onclick="handleDeleteServicio(${item.idServicio})" class="text-red-600 hover:text-red-900 ml-2">Eliminar</button>
+                                    </td>
+                                </tr>`;
+                        });
+                    } catch (error) {
+                        listBody.innerHTML = `<tr><td colspan="10" class="text-center py-4 text-red-500">${error.message || "Error al cargar datos."}</td></tr>`;
+                    }
+                }
+        // --- Lógica para Crear y Editar Usuarios ---
+        let editingUserId = null; // Variable para saber si estamos editando
+
+        function startEditUser(id, username, role) {
+            editingUserId = id;
+            document.getElementById('user-form-username').value = username;
+            document.getElementById('user-form-role').value = role;
+            document.getElementById('user-form-password').value = ''; // Limpiar campo de contraseña
+            document.getElementById('user-form-password').placeholder = 'Dejar en blanco para no cambiar';
+            
+            // Cambiar el texto del botón y mostrar botón de cancelar
+            document.getElementById('user-form-button').textContent = 'Actualizar Usuario';
+            document.getElementById('cancel-edit-button').classList.remove('hidden');
+        }
+
+        function cancelEdit() {
+            editingUserId = null;
+            document.getElementById('user-form').reset();
+            document.getElementById('user-form-password').placeholder = '';
+            document.getElementById('user-form-button').textContent = 'Guardar Usuario';
+            document.getElementById('cancel-edit-button').classList.add('hidden');
+        }
+
+        async function handleSaveUser() {
+            const username = document.getElementById('user-form-username').value;
+            const password = document.getElementById('user-form-password').value;
+            const role = document.getElementById('user-form-role').value;
+            const formMessage = document.getElementById('user-form-message');
+
+            if (!username || !role) {
+                showMessage(formMessage, 'El nombre de usuario y el rol son requeridos.', 'bg-yellow-100 text-yellow-700');
+                return;
+            }
+
+            const url = editingUserId ? `/api/usuarios/${editingUserId}` : '/api/auth/register';
+            const method = editingUserId ? 'PUT' : 'POST';
+
+            const body = {
+                username,
+                password: password || null, // Enviar null si está vacío para no actualizar
+                role
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwtToken}`
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (response.ok) {
+                    const successMessage = editingUserId ? '¡Usuario actualizado con éxito!' : '¡Usuario creado con éxito!';
+                    showMessage(formMessage, successMessage, 'bg-green-100 text-green-700');
+                    cancelEdit(); // Limpiar formulario y resetear estado
+                    await loadUsers(); // Recargar la lista de usuarios
+                } else {
+                    const errorData = await response.json();
+                    showMessage(formMessage, errorData.message || 'Error al guardar el usuario.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                console.error('Error en handleSaveUser:', error);
+                showMessage(formMessage, 'No se pudo conectar con el servidor.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        // --- Lógica para Eliminar Usuarios ---
+        async function handleDeleteUser(userId) {
+            if (!confirm(`¿Estás seguro de que quieres eliminar al usuario con ID ${userId}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/usuarios/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    showMessage(document.getElementById('user-form-message'), '¡Usuario eliminado con éxito!', 'bg-green-100 text-green-700');
+                    await loadUsers(); // Recargar la lista de usuarios
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    showMessage(document.getElementById('user-form-message'), errorData.message || 'Error al eliminar el usuario.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                console.error('Error en handleDeleteUser:', error);
+                showMessage(document.getElementById('user-form-message'), 'No se pudo conectar con el servidor.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        // --- Lógica para Registro de Pagos ---
+        let serviciosActivosCache = [];
+
+        async function loadPagosAndShowScreen() {
+            await loadPrerequisitesForPagoForm();
+            await loadPagos();
+            showScreen('payments-screen');
+        }
+
+        function handleSearchPagos() {
+            const query = document.getElementById('pago-search-query').value;
+            loadPagos(query);
+        }
+
+        async function loadPrerequisitesForPagoForm() {
+            const select = document.getElementById('cliente_servicio');
+            try {
+                const response = await fetch('/api/servicios', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                const result = await response.json();
+                if (!result.success) throw new Error('No se pudieron cargar los servicios.');
+                
+                // Reutilizamos el cache de clientes o lo cargamos si no existe
+                if (clientesCache.length === 0) {
+                    const clientesRes = await fetch('/api/clientes', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                    const clientesResult = await clientesRes.json();
+                    if(clientesResult.success) clientesCache = clientesResult.data;
+                }
+
+                serviciosActivosCache = result.data;
+                select.innerHTML = '<option value="" disabled selected>-- Seleccione un servicio --</option>';
+                serviciosActivosCache.forEach(servicio => {
+                    const cliente = clientesCache.find(c => c.idCliente === servicio.idCliente);
+                    const clienteNombre = cliente ? `${cliente.nombre} ${cliente.apellido}` : 'Cliente Desconocido';
+                    const planNombre = servicio.plan ? servicio.plan.nombrePlan : 'Plan Desconocido';
+                    select.innerHTML += `<option value="${servicio.idServicio}">${clienteNombre} - ${planNombre}</option>`;
+                });
+            } catch (error) {
+                select.innerHTML = '<option>Error al cargar servicios</option>';
+            }
+        }
+
+        function actualizarInterfazPago() {
+            const tipoPago = document.getElementById('tipo_pago').value;
+            const diasContainer = document.getElementById('dias-container');
+            if (tipoPago === 'dias') {
+                diasContainer.classList.remove('hidden');
+            } else {
+                diasContainer.classList.add('hidden');
+                document.getElementById('dias_pagar').value = '';
+            }
+            actualizarMontoPago();
+        }
+
+        function actualizarMontoPago() {
+            const idServicio = document.getElementById('cliente_servicio').value;
+            const montoPagarInput = document.getElementById('monto_pagar');
+            if (!idServicio) {
+                montoPagarInput.value = '';
+                return;
+            }
+
+            const servicio = serviciosActivosCache.find(s => s.idServicio == idServicio);
+            if (!servicio || !servicio.plan) return;
+
+            const costoMensual = servicio.plan.costoMensual;
+            const tipo = document.getElementById('tipo_pago').value;
+            let montoTotal = 0;
+
+            if (tipo === 'mes') {
+                montoTotal = costoMensual - (servicio.descuentoMonto || 0);
+            } else {
+                const dias = parseInt(document.getElementById('dias_pagar').value, 10);
+                if (isNaN(dias) || dias <= 0) {
+                    montoPagarInput.value = '';
+                    return;
+                }
+                const costoPorDia = costoMensual / 30;
+                montoTotal = costoPorDia * dias;
+            }
+            montoPagarInput.value = `Q${montoTotal.toFixed(2)}`;
+        }
+
+        async function handleRegisterPago() {
+            const formMessage = document.getElementById('messageBox');
+            const idServicio = parseInt(document.getElementById('cliente_servicio').value, 10);
+            const montoString = document.getElementById('monto_pagar').value;
+
+            if (isNaN(idServicio) || !montoString) {
+                showMessage(formMessage, "Por favor, complete todos los campos requeridos.", 'bg-red-100 text-red-700');
+                return;
+            }
+
+            const monto = parseFloat(montoString.replace('Q', ''));
+            const dias = parseInt(document.getElementById('dias_pagar').value, 10) || 30;
+            const fechaHoy = new Date();
+            const periodoFin = new Date(fechaHoy.getTime() + (dias * 24 * 60 * 60 * 1000));
+
+            const body = {
+                idServicio: idServicio,
+                monto: monto,
+                metodoPago: 'EFECTIVO', // Hardcodeado por ahora
+                diasCubiertos: dias,
+                comentario: document.getElementById('comentario').value,
+                periodoInicio: fechaHoy.toISOString().split('T')[0],
+                periodoFin: periodoFin.toISOString().split('T')[0]
+            };
+
+            try {
+                const response = await fetch('/api/pagos', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` }, body: JSON.stringify(body) });
+                const result = await response.json();
+                if (result.success) {
+                    showMessage(formMessage, result.message, 'bg-green-100 text-green-700');
+                    document.getElementById('cliente_servicio').value = '';
+                    document.getElementById('monto_pagar').value = '';
+                    document.getElementById('comentario').value = '';
+                    await loadPagos();
+                } else {
+                    showMessage(formMessage, result.message || 'Error al registrar el pago.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function loadPagos(query = '') {
+            const listBody = document.getElementById('pago-history-body');
+            listBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Cargando...</td></tr>';
+
+            const url = query ? `/api/pagos/query?query=${encodeURIComponent(query)}` : '/api/pagos';
+
+            try {
+                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                const result = await response.json();
+                if (!result.success) throw new Error(result.message || 'Error de red.');
+                const data = result.data;
+                listBody.innerHTML = '';
+                if (data.length === 0) {
+                    listBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">No hay pagos registrados.</td></tr>';
+                    return;
+                }
+                if (clientesCache.length === 0) await loadPrerequisitesForPagoForm();
+
+                data.forEach(item => {
+                    const servicio = serviciosActivosCache.find(s => s.idServicio === item.idServicio);
+                    const cliente = servicio ? clientesCache.find(c => c.idCliente === servicio.idCliente) : null;
+                    const clienteNombre = cliente ? `${cliente.nombre} ${cliente.apellido}` : 'N/A';
+                    const estadoClass = item.estadoPago === 'REALIZADO' ? 'text-green-600' : 'text-red-600';
+
+                    listBody.innerHTML += `
+                        <tr>
+                            <td class="px-6 py-4">${item.idPago}</td>
+                            <td class="px-6 py-4">${new Date(item.fechaPago).toLocaleDateString()}</td>
+                            <td class="px-6 py-4">Q${item.monto.toFixed(2)}</td>
+                            <td class="px-6 py-4">${clienteNombre}</td>
+                            <td class="px-6 py-4">${item.comentario || ''}</td>
+                            <td class="px-6 py-4 font-bold ${estadoClass}">${item.estadoPago}</td>
+                            <td class="px-6 py-4">
+                                <button onclick="handleEditPagoComentario(${item.idPago}, '${item.comentario || ''}')" class="text-indigo-600 hover:text-indigo-900" ${item.estadoPago === 'ANULADO' ? 'disabled' : ''}>Editar</button>
+                                <button onclick="handleAnularPago(${item.idPago})" class="text-red-600 hover:text-red-900 ml-2" ${item.estadoPago === 'ANULADO' ? 'disabled' : ''}>Anular</button>
+                            </td>
+                        </tr>`;
+                });
+            } catch (error) {
+                listBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">${error.message || "Error al cargar datos."}
+</td></tr>`;
+            }
+        }
+
+        async function handleAnularPago(pagoId) {
+            if (!confirm(`¿Estás seguro de que quieres ANULAR el pago con ID ${pagoId}?`)) return;
+            const formMessage = document.getElementById('messageBox');
+            try {
+                const response = await fetch(`/api/pagos/${pagoId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                const result = await response.json();
+                if (result.success) {
+                    showMessage(formMessage, 'Pago anulado correctamente.', 'bg-green-100 text-green-700');
+                    await loadPagos();
+                } else {
+                    showMessage(formMessage, result.message || 'Error al anular el pago.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function handleEditPagoComentario(pagoId, currentComment) {
+            const newComment = prompt("Editar comentario:", currentComment);
+            if (newComment === null || newComment === currentComment) {
+                return; // No hacer nada si el usuario cancela o no cambia el texto
+            }
+            const formMessage = document.getElementById('messageBox');
+            try {
+                const response = await fetch(`/api/pagos/${pagoId}/comentario`, { 
+                    method: 'PATCH', 
+                    headers: { 'Content-Type': 'text/plain', 'Authorization': `Bearer ${jwtToken}` },
+                    body: newComment
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showMessage(formMessage, 'Comentario actualizado.', 'bg-green-100 text-green-700');
+                    await loadPagos();
+                } else {
+                    showMessage(formMessage, result.message || 'Error al actualizar.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+            }
+        }
+
+
+
+        // Event Listeners para el formulario de pago
+        document.getElementById('tipo_pago').addEventListener('change', actualizarInterfazPago);
+        document.getElementById('cliente_servicio').addEventListener('change', actualizarMontoPago);
+        document.getElementById('dias_pagar').addEventListener('input', actualizarMontoPago);
+        document.querySelector('#payments-screen button[onclick="registrarPago()"]').setAttribute('onclick', 'handleRegisterPago()');
+
+    </script>
+</body>
+</html>

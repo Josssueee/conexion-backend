@@ -1,4 +1,4 @@
-package com.conexion.backend.service;
+package com.conexion.backend.service.service;
 
 import com.conexion.backend.dto.DispositivoDTO;
 import com.conexion.backend.dto.PlanDTO;
@@ -119,10 +119,48 @@ public class ServicioService {
     // UC05.02: Buscar servicios por cliente o estado
     @Transactional(readOnly = true)
     public List<ServicioDTO> buscarServicios(String query) {
-        // En este ejemplo, solo buscaremos por estado
-        List<Servicio> servicios = servicioRepository.findByEstadoServicioContainingIgnoreCase(query);
+        List<Servicio> servicios = servicioRepository.searchByClienteOrMac(query);
         return servicios.stream()
                 .map(mapper::toServicioDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ServicioDTO> findAll() {
+        return servicioRepository.findAll().stream()
+                .map(mapper::toServicioDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ServicioDTO updateServicio(Integer id, ServicioDTO dto) {
+        Servicio existingServicio = servicioRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Servicio no encontrado."));
+
+        Cliente cliente = clienteRepository.findById(dto.getIdCliente())
+            .orElseThrow(() -> new RuntimeException("Cliente no encontrado."));
+        Plan plan = planRepository.findById(dto.getIdPlan())
+            .orElseThrow(() -> new RuntimeException("Plan no encontrado."));
+        Dispositivo dispositivo = dispositivoRepository.findById(dto.getIdDispositivo())
+            .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado."));
+
+        existingServicio.setCliente(cliente);
+        existingServicio.setPlan(plan);
+        existingServicio.setDispositivo(dispositivo);
+        existingServicio.setFechaActivacion(dto.getFechaActivacion());
+        existingServicio.setProximoPago(dto.getProximoPago());
+        existingServicio.setEstadoServicio(dto.getEstadoServicio());
+        existingServicio.setDescuentoMonto(dto.getDescuentoMonto());
+
+        Servicio updatedServicio = servicioRepository.save(existingServicio);
+        return mapper.toServicioDTO(updatedServicio);
+    }
+
+    @Transactional
+    public void deleteServicio(Integer id) {
+        if (!servicioRepository.existsById(id)) {
+            throw new RuntimeException("Servicio no encontrado.");
+        }
+        servicioRepository.deleteById(id);
     }
 }

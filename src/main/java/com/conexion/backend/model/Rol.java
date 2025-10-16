@@ -14,5 +14,5 @@ public class Rol {
     private Integer idRol;
 
     @Column(nullable = false, unique = true)
-    private String nombreRol;
+    private String nombreRol;
 }
