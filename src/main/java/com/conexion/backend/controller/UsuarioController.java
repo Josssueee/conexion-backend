@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Controlador REST para la consulta de Usuarios.
- * URL Base: /api/usuarios
+ * URL Base: /api/usuariosasee
  */
 @RestController
 @RequestMapping("/api/usuarios")

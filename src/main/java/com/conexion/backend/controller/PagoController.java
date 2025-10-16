@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pagos")
-public class PagoController {
+public class PagoController {as
 
     private final PagoService pagoService;
 
