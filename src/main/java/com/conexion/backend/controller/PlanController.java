@@ -1,7 +1,5 @@
 package com.conexion.backend.controller;
 
-import com.conexion.backend.dto.PlanDTO;
-import com.conexion.backend.service.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

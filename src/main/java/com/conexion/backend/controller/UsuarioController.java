@@ -1,7 +1,6 @@
 package com.conexion.backend.controller;
 
 import com.conexion.backend.model.Usuario;
-import com.conexion.backend.service.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
