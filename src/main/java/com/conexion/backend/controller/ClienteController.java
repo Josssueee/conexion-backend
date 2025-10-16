@@ -4,6 +4,7 @@ import com.conexion.backend.dto.ApiResponseDTO;
 import com.conexion.backend.dto.ClienteDTO;
 import com.conexion.backend.service.service.ClienteService;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
