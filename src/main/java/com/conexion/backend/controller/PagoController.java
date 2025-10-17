@@ -2,7 +2,7 @@ package com.conexion.backend.controller;
 
 import com.conexion.backend.dto.ApiResponseDTO;
 import com.conexion.backend.dto.PagoDTO;
-import com.conexion.backend.service.PagoService;
+import com.conexion.backend.service.service.PagoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,13 +11,23 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pagos")
-public class PagoController {
+public class PagoController {as
 
     private final PagoService pagoService;
 
     @Autowired
     public PagoController(PagoService pagoService) {
         this.pagoService = pagoService;
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponseDTO<List<PagoDTO>>> findAll() {
+        List<PagoDTO> pagos = pagoService.findAll();
+        return ResponseEntity.ok(ApiResponseDTO.<List<PagoDTO>>builder()
+                .success(true)
+                .message("Historial de todos los pagos.")
+                .data(pagos)
+                .build());
     }
 
     // UC04.01: Registrar un nuevo pago
@@ -46,6 +56,36 @@ public class PagoController {
                 .success(true)
                 .message("Historial de pagos del servicio " + idServicio)
                 .data(historial)
+                .build());
+    }
+
+    @GetMapping("/query")
+    public ResponseEntity<ApiResponseDTO<List<PagoDTO>>> search(@RequestParam String query) {
+        List<PagoDTO> pagos = pagoService.search(query);
+        return ResponseEntity.ok(ApiResponseDTO.<List<PagoDTO>>builder()
+                .success(true)
+                .message("Resultado de la búsqueda de pagos.")
+                .data(pagos)
+                .build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponseDTO<PagoDTO>> anularPago(@PathVariable Integer id) {
+        PagoDTO pagoAnulado = pagoService.anularPago(id);
+        return ResponseEntity.ok(ApiResponseDTO.<PagoDTO>builder()
+                .success(true)
+                .message("Pago anulado exitosamente.")
+                .data(pagoAnulado)
+                .build());
+    }
+
+    @PatchMapping("/{id}/comentario")
+    public ResponseEntity<ApiResponseDTO<PagoDTO>> updateComentario(@PathVariable Integer id, @RequestBody String comentario) {
+        PagoDTO pagoActualizado = pagoService.updateComentario(id, comentario);
+        return ResponseEntity.ok(ApiResponseDTO.<PagoDTO>builder()
+                .success(true)
+                .message("Comentario del pago actualizado.")
+                .data(pagoActualizado)
                 .build());
     }
 }

@@ -3,14 +3,14 @@ package com.conexion.backend.controller;
 import com.conexion.backend.dto.ApiResponseDTO;
 import com.conexion.backend.dto.PlanDTO;
 import com.conexion.backend.dto.ServicioDTO;
-import com.conexion.backend.service.ServicioService;
+import com.conexion.backend.service.service.ServicioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@RestController
+aee@RestController
 @RequestMapping("/api/servicios")
 public class ServicioController {
 
@@ -19,6 +19,16 @@ public class ServicioController {
     @Autowired
     public ServicioController(ServicioService servicioService) {
         this.servicioService = servicioService;
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponseDTO<List<ServicioDTO>>> findAll() {
+        List<ServicioDTO> servicios = servicioService.findAll();
+        return ResponseEntity.ok(ApiResponseDTO.<List<ServicioDTO>>builder()
+                .success(true)
+                .message("Lista de todos los servicios.")
+                .data(servicios)
+                .build());
     }
 
     // UC03.01: Asignar un servicio a un cliente
@@ -94,6 +104,25 @@ public class ServicioController {
                 .success(true)
                 .message("Resultados de la búsqueda de servicios.")
                 .data(servicios)
+                .build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponseDTO<ServicioDTO>> updateServicio(@PathVariable Integer id, @RequestBody ServicioDTO dto) {
+        ServicioDTO updatedServicio = servicioService.updateServicio(id, dto);
+        return ResponseEntity.ok(ApiResponseDTO.<ServicioDTO>builder()
+                .success(true)
+                .message("Servicio actualizado exitosamente.")
+                .data(updatedServicio)
+                .build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponseDTO<Void>> deleteServicio(@PathVariable Integer id) {
+        servicioService.deleteServicio(id);
+        return ResponseEntity.ok(ApiResponseDTO.<Void>builder()
+                .success(true)
+                .message("Servicio eliminado exitosamente.")
                 .build());
     }
 }
