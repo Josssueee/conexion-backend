@@ -75,8 +75,10 @@ public class UsuarioService {
             }
         });
 
-        // 3. Actualizar el nombre de usuario
+        // 3. Actualizar el nombre de usuario, nombre y apellido
         existingUser.setNombreUsuario(request.getUsername());
+        existingUser.setNombre(request.getNombre()); // Add this line
+        existingUser.setApellido(request.getApellido()); // Add this line
 
         // 4. Actualizar la contraseña solo si se proporciona una nueva
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {

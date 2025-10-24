@@ -6,15 +6,13 @@
     <title>Conexión - Gestión de Internet</title>
     <!-- Incluye Tailwind CSS para un estilo rápido y responsivo -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+            background: linear-gradient(135deg, #e0f2fe 0%, #eef2ff 100%); /* New gradient background */
         }
         .screen {
             display: none;
@@ -27,135 +25,306 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Styles from new design for menu cards */
+        .menu-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            border-radius: 0.75rem;
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        .menu-card .icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            margin-bottom: 0.75rem;
+            stroke-width: 2.5;
+        }
+        /* Estilos para el botón "Primary Filled Button" */
+        .primary-blue-button {
+            background-color: #2563EB; /* Azul 600 */
+            color: #ffffff; /* Texto blanco */
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); /* Sombra inicial */
+        }
+
+        .primary-blue-button:hover {
+            background-color: #1D4ED8; /* Azul 700 al pasar el ratón */
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4); /* Sombra más pronunciada */
+            transform: translateY(-2px); /* Ligeramente elevado */
+        }
+
+        .primary-blue-button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Estilos para el botón secundario "Regresar" */
+        .secondary-button {
+            background-color: #cbd5e1; /* Gris claro */
+            color: #334155; /* Gris oscuro */
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .secondary-button:hover {
+            background-color: #94a3b8; /* Gris medio */
+            color: #f8fafc; /* Blanco casi */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Estilos específicos para los campos de entrada al enfocarse */
+        input:focus, select:focus {
+            border-color: #2563EB !important; /* Azul 600 */
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3) !important; /* Anillo de enfoque azul */
+            outline: none !important;
+        }
     </style>
 </head>
-<body class="bg-gray-100 p-8">
+<body class="bg-indigo-50 p-8">
 
     <!-- Contenedor principal de la aplicación -->
-    <div class="container bg-white rounded-xl shadow-lg p-6 md:p-10">
+    <div class="w-full max-w-5xl mx-auto bg-white rounded-xl shadow-2xl p-6 sm:p-10">
 
         <!-- Pantalla de inicio de sesión -->
         <div id="login-screen" class="screen active">
-            <div class="flex flex-col items-center justify-center min-h-screen">
-                <div class="w-full max-w-sm bg-gray-50 rounded-lg shadow-md p-6">
-                    <h1 class="text-4xl font-bold text-center mb-4 text-gray-800">Conexión</h1>
-                    <h2 class="text-xl text-center mb-8 text-gray-600">Gestión de Internet</h2>
-                    <form>
-                        <div class="mb-4">
-                            <label for="username" class="block text-gray-700 font-medium mb-2">Usuario</label>
-                            <input type="text" id="username" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ingrese su usuario">
-                        </div>
-                        <div class="mb-6">
-                            <label for="password" class="block text-gray-700 font-medium mb-2">Contraseña</label>
-                            <input type="password" id="password" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ingrese su contraseña">
-                        </div>
-                        <button type="button" onclick="handleLogin()" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
-                            Ingresar
-                        </button>
-                    </form>
-                    <div id="login-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
+            <!-- Contenedor Principal: Tarjeta de Login -->
+            <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden transform transition duration-500 hover:shadow-2xl mx-auto mt-10">
+
+                <!-- Header con Banner de Color Frío -->
+                <div class="bg-blue-600 p-8 flex flex-col items-center">
+                    <i data-lucide="shield-check" class="w-12 h-12 text-white mb-2"></i>
+                    <h1 class="text-3xl font-extrabold text-white">Conexión</h1>
+                    <p class="text-white text-opacity-80 mt-1">Gestión de Internet</p>
                 </div>
+
+                <!-- Formulario de Inicio de Sesión -->
+                <form id="loginForm" class="p-8 sm:p-10">
+                    
+                    <h2 class="text-xl font-semibold text-gray-700 mb-6 text-center">Inicie Sesión en su Cuenta</h2>
+
+                    <!-- Campo de Usuario -->
+                    <div class="mb-5">
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                            <i data-lucide="user" class="w-4 h-4 mr-2 text-blue-600"></i>
+                            Nombre de Usuario
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="username" name="username" placeholder="Ingrese su usuario"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 shadow-sm"
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Campo de Contraseña -->
+                    <div class="mb-8">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                            <i data-lucide="lock" class="w-4 h-4 mr-2 text-blue-600"></i>
+                            Contraseña
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="password" name="password" placeholder="••••••••"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 shadow-sm"
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Botón de Ingreso -->
+                    <button type="button" onclick="handleLogin()"
+                            class="w-full py-3 bg-cyan-500 text-white font-bold rounded-lg shadow-md hover:bg-cyan-600 transition duration-200 focus:ring-4 focus:ring-cyan-300 focus:outline-none flex items-center justify-center">
+                        <i data-lucide="log-in" class="w-5 h-5 mr-2"></i>
+                        Ingresar
+                    </button>
+                    
+                    <!-- Mensaje de Estado -->
+                    <div id="login-message" class="mt-4 p-3 rounded-lg text-center hidden text-sm font-medium"></div>
+
+                </form>
             </div>
         </div>
 
         <!-- Pantalla del Dashboard (Menú Principal) -->
         <div id="dashboard-screen" class="screen">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Menú Principal</h1>
-                <button onclick="handleLogout()" class="bg-red-600 text-white font-bold py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">Cerrar Sesión</button>
-            </div>
-            <p class="text-lg text-gray-600 mb-8">Selecciona una opción para gestionar la aplicación.</p>
-
+            <!-- Encabezado y Botón de Sesión -->
+            <header class="flex justify-between items-start mb-8 border-b pb-4">
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800">Menú Principal</h1>
+                    <p class="text-gray-500 mt-1">Bienvenido. Gestiona la aplicación.</p>
+                </div>
+                <!-- Botón de Cerrar Sesión con funcionalidad original -->
+                <button onclick="handleLogout()" 
+                        class="ml-4 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition duration-200 shadow-md flex items-center">
+                    <i data-lucide="log-out" class="w-5 h-5 mr-1"></i>
+                    Cerrar Sesión
+                </button>
+            </header>
+            
+            <!-- Grid de Opciones de Menú -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <button onclick="loadUsersAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700 transition duration-300">
-                    <span class="text-3xl mb-2">🧑‍🤝‍🧑</span>
-                    Gestión de Usuarios
+
+                <!-- Opción 1: Gestión de Usuarios -->
+                <button onclick="loadUsersAndShowScreen()" class="menu-card bg-blue-700 hover:bg-blue-800">
+                    <i data-lucide="users" class="icon"></i>
+                    <span class="text-xl font-bold">Gestión de Usuarios</span>
+                    <span class="text-sm opacity-80">Crear, editar o eliminar cuentas.</span>
                 </button>
-                <button onclick="loadClientesAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-green-600 text-white font-bold rounded-xl shadow-md hover:bg-green-700 transition duration-300">
-                    <span class="text-3xl mb-2">👤</span>
-                    Gestión de Clientes
+
+                <!-- Opción 2: Gestión de Clientes -->
+                <button onclick="loadClientesAndShowScreen()" class="menu-card bg-teal-600 hover:bg-teal-700">
+                    <i data-lucide="briefcase" class="icon"></i>
+                    <span class="text-xl font-bold">Gestión de Clientes</span>
+                    <span class="text-sm opacity-80">Visualizar y administrar datos de clientes.</span>
                 </button>
-                <button onclick="loadPlansAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-yellow-600 text-white font-bold rounded-xl shadow-md hover:bg-yellow-700 transition duration-300">
-                    <span class="text-3xl mb-2">📜</span>
-                    Gestión de Planes
+
+                <!-- Opción 3: Gestión de Planes -->
+                <button onclick="loadPlansAndShowScreen()" class="menu-card bg-sky-500 hover:bg-sky-600">
+                    <i data-lucide="package" class="icon"></i>
+                    <span class="text-xl font-bold">Gestión de Planes</span>
+                    <span class="text-sm opacity-80">Configuración de paquetes de servicio.</span>
                 </button>
-                <button onclick="loadClasificacionesAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-indigo-600 text-white font-bold rounded-xl shadow-md hover:bg-indigo-700 transition duration-300">
-                    <span class="text-3xl mb-2">🗂️</span>
-                    Clasificación de Dispositivos
+
+                <!-- Opción 4: Clasificación de Dispositivos -->
+                <button onclick="loadClasificacionesAndShowScreen()" class="menu-card bg-indigo-600 hover:bg-indigo-700">
+                    <i data-lucide="cpu" class="icon"></i>
+                    <span class="text-xl font-bold">Clasificación de Dispositivos</span>
+                    <span class="text-sm opacity-80">Categorización de equipos.</span>
                 </button>
-                <button onclick="loadDispositivosAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-red-600 text-white font-bold rounded-xl shadow-md hover:bg-red-700 transition duration-300">
-                    <span class="text-3xl mb-2">📡</span>
-                    Gestión de Dispositivos
+
+                <!-- Opción 5: Gestión de Dispositivos -->
+                <button onclick="loadDispositivosAndShowScreen()" class="menu-card bg-cyan-600 hover:bg-cyan-700">
+                    <i data-lucide="router" class="icon"></i>
+                    <span class="text-xl font-bold">Gestión de Dispositivos</span>
+                    <span class="text-sm opacity-80">Alta y mantenimiento de equipos.</span>
                 </button>
-                <button onclick="loadServiciosAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-purple-600 text-white font-bold rounded-xl shadow-md hover:bg-purple-700 transition duration-300">
-                    <span class="text-3xl mb-2">🌐</span>
-                    Gestión de Servicios
+
+                <!-- Opción 6: Gestión de Servicios -->
+                <button onclick="loadServiciosAndShowScreen()" class="menu-card bg-blue-500 hover:bg-blue-600">
+                    <i data-lucide="globe" class="icon"></i>
+                    <span class="text-xl font-bold">Gestión de Servicios</span>
+                    <span class="text-sm opacity-80">Definición de servicios ofrecidos.</span>
                 </button>
-                <button onclick="loadPagosAndShowScreen()" class="flex flex-col items-center justify-center p-6 bg-pink-600 text-white font-bold rounded-xl shadow-md hover:bg-pink-700 transition duration-300">
-                    <span class="text-3xl mb-2">💰</span>
-                    Registro de Pagos
+
+                <!-- Opción 7: Registro de Pagos -->
+                <button onclick="loadPagosAndShowScreen()" class="menu-card bg-emerald-600 hover:bg-emerald-700">
+                    <i data-lucide="credit-card" class="icon"></i>
+                    <span class="text-xl font-bold">Registro de Pagos</span>
+                    <span class="text-sm opacity-80">Registro y seguimiento de transacciones.</span>
                 </button>
             </div>
         </div>
 
         <!-- Pantalla de Gestión de Usuarios -->
         <div id="users-screen" class="screen">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Gestión de Usuarios</h1>
-                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Crear/Editar Usuario</h2>
-                <form id="user-form" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                        <input type="text" id="user-form-firstname" class="w-full mt-1 px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" disabled>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Apellido</label>
-                        <input type="text" id="user-form-lastname" class="w-full mt-1 px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" disabled>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Nombre de Usuario</label>
-                        <input type="text" id="user-form-username" class="w-full mt-1 px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Contraseña</label>
-                        <input type="password" id="user-form-password" class="w-full mt-1 px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Rol</label>
-                        <select id="user-form-role" class="w-full mt-1 px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
-                            <option value="ADMINISTRADOR">Administrador</option>
-                            <option value="TECNICO">Técnico</option>
-                        </select>
-                    </div>
-                    <div class="flex space-x-4">
-                        <button id="user-form-button" type="button" onclick="handleSaveUser()" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">Guardar Usuario</button>
-                        <button id="cancel-edit-button" type="button" onclick="cancelEdit()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar Edición</button>
-                    </div>
-                </form>
-                <div id="user-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
-            </div>
-            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Listado de Usuarios</h2>
-            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <tbody id="user-list-body" class="bg-white divide-y divide-gray-200">
-                        <tr><td class="px-6 py-4">1</td><td class="px-6 py-4">Admin Principal</td><td class="px-6 py-4">admin</td><td class="px-6 py-4">Administrador</td><td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-900 mr-2">Editar</button><button class="text-red-600 hover:text-red-900">Eliminar</button></td></tr>
-                        <tr><td class="px-6 py-4">2</td><td class="px-6 py-4">Técnico A</td><td class="px-6 py-4">tecnico1</td><td class="px-6 py-4">Técnico</td><td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-900 mr-2">Editar</button><button class="text-red-600 hover:text-red-900">Eliminar</button></td></tr>
-                    </tbody>
-                </table>
+            <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-2xl relative">
+                <!-- Botón de Regresar -->
+                <button onclick="showScreen('dashboard-screen')" class="secondary-button absolute top-6 right-6">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Regresar
+                </button>
+
+                <h1 class="text-3xl font-extrabold text-gray-800 mb-6 border-b-2 border-blue-500 pb-3 flex items-center gap-3">
+                    <i data-lucide="users" class="w-8 h-8 text-blue-600"></i> Panel de Gestión de Usuarios
+                </h1>
+
+                <!-- Formulario de Creación/Edición de Usuario -->
+                <div class="mb-10 p-6 bg-slate-50 rounded-xl shadow-inner border border-slate-200">
+                    <h2 class="text-xl font-bold text-gray-700 mb-5 flex items-center gap-2">
+                        <i data-lucide="user-plus" class="w-5 h-5 text-blue-500"></i> Detalles del Usuario
+                    </h2>
+                    
+                    <form id="user-form" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                            <!-- Campo Nombre -->
+                            <div>
+                                <label for="user-name" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                                <input type="text" id="user-name" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2.5 border" placeholder="Ej: Juan" required>
+                            </div>
+                            
+                            <!-- Campo Apellido -->
+                            <div>
+                                <label for="user-lastname" class="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+                                <input type="text" id="user-lastname" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2.5 border" placeholder="Ej: Pérez" required>
+                            </div>
+
+                            <!-- Campo Nombre de Usuario -->
+                            <div>
+                                <label for="user-username" class="block text-sm font-medium text-gray-700 mb-1">Nombre de Usuario</label>
+                                <input type="text" id="user-username" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2.5 border" placeholder="Ej: jperez_admin" required>
+                            </div>
+
+                            <!-- Campo Contraseña -->
+                            <div>
+                                <label for="user-password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                                <input type="password" id="user-password" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2.5 border" placeholder="Mínimo 8 caracteres">
+                            </div>
+                        </div>
+
+                        <!-- Campo Rol (Ahora ocupa todo el ancho si la cuadrícula es 2) -->
+                        <div class="md:col-span-2">
+                            <label for="user-role" class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+                            <select id="user-role" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2.5 border bg-white">
+                                <option value="ADMINISTRADOR">Administrador</option>
+                                <option value="TECNICO">Técnico</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Botón de Guardar con el nuevo diseño de relleno -->
+                        <div class="pt-6 text-right">
+                            <button type="button" id="save-button" class="primary-blue-button" onclick="handleSaveUser()">
+                                <i data-lucide="save" class="w-5 h-5"></i>
+                                <span id="save-button-text">Guardar Usuario</span>
+                            </button>
+                            <button type="button" id="cancel-edit-button" onclick="cancelEdit()" class="secondary-button ml-2 hidden">
+                                Cancelar Edición
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Mensaje de estado -->
+                <div id="status-message" class="hidden p-3 rounded-lg text-center font-medium shadow-md mb-8"></div>
+
+                <!-- Lista de Usuarios -->
+                <h2 class="text-2xl font-bold text-gray-800 mb-5 mt-8 border-b-2 border-slate-300 pb-2 flex items-center gap-3">
+                    <i data-lucide="list-checks" class="w-6 h-6 text-slate-600"></i> Usuarios Registrados
+                </h2>
+                <div id="users-list" class="space-y-4">
+                    <!-- Los usuarios se añadirán aquí con JavaScript -->
+                </div>
             </div>
         </div>
         
         <!-- Pantalla de Gestión de Clientes -->
         <div id="clients-screen" class="screen">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Gestión de Clientes</h1>
-                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            <div class="flex justify-between items-center mb-6 border-b-2 border-blue-500 pb-3">
+                <h1 class="text-3xl font-extrabold text-gray-800 flex items-center gap-3"><i data-lucide="briefcase" class="w-8 h-8 text-blue-600"></i>Gestión de Clientes</h1>
+                <button onclick="showScreen('dashboard-screen')" class="secondary-button"><i data-lucide="arrow-left" class="w-4 h-4"></i>Regresar</button>
             </div>
-            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Crear/Editar Cliente</h2>
+            <div class="bg-slate-50 rounded-xl shadow-inner border border-slate-200 p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-700 mb-5 flex items-center gap-2"><i data-lucide="user-plus" class="w-5 h-5 text-blue-500"></i>Crear/Editar Cliente</h2>
                 <form id="cliente-form" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div><label class="block text-sm font-medium text-gray-700">Nombre</label><input type="text" id="cliente-form-nombre" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
@@ -165,9 +334,9 @@
                         <div><label class="block text-sm font-medium text-gray-700">DPI</label><input type="text" id="cliente-form-dpi" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
                         <div><label class="block text-sm font-medium text-gray-700">Estado</label><select id="cliente-form-estado" class="w-full mt-1 px-3 py-2 border rounded-md"><option value="ACTIVO">Activo</option><option value="INACTIVO">Inactivo</option></select></div>
                     </div>
-                    <div class="flex space-x-4">
-                        <button id="cliente-form-button" type="button" onclick="handleSaveCliente()" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 transition duration-300">Guardar Cliente</button>
-                        <button id="cancel-edit-cliente-button" type="button" onclick="cancelEditCliente()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar</button>
+                    <div class="flex space-x-4 pt-4">
+                        <button id="cliente-form-button" type="button" onclick="handleSaveCliente()" class="primary-blue-button w-full"><i data-lucide="save" class="w-5 h-5"></i>Guardar Cliente</button>
+                        <button id="cancel-edit-cliente-button" type="button" onclick="cancelEditCliente()" class="secondary-button w-full hidden"><i data-lucide="x" class="w-5 h-5"></i>Cancelar</button>
                     </div>
                 </form>
                 <div id="cliente-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
@@ -175,22 +344,22 @@
 
             <!-- Formulario de Búsqueda -->
             <div class="mb-4">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Buscar Clientes</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-5 flex items-center gap-3"><i data-lucide="search" class="w-6 h-6 text-slate-600"></i>Buscar Clientes</h2>
                 <div class="flex space-x-2">
                     <input type="text" id="cliente-search-query" class="w-full px-3 py-2 border rounded-md" placeholder="Buscar por nombre, DPI o teléfono...">
-                    <button onclick="handleSearchClientes()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Buscar</button>
-                    <button onclick="loadClientes()" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500">Limpiar</button>
+                    <button onclick="handleSearchClientes()" class="primary-blue-button"><i data-lucide="search" class="w-5 h-5"></i>Buscar</button>
+                    <button onclick="loadClientes()" class="secondary-button"><i data-lucide="rotate-cw" class="w-5 h-5"></i>Limpiar</button>
                 </div>
             </div>
 
-            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Listado de Clientes</h2>
-            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-5 mt-8 border-b-2 border-slate-300 pb-2 flex items-center gap-3"><i data-lucide="list-checks" class="w-6 h-6 text-slate-600"></i>Listado de Clientes</h2>
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-100">
+                    <thead class="bg-gray-50">
                         <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DPI</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
                     </thead>
                     <tbody id="cliente-list-body" class="bg-white divide-y divide-gray-200">
-                        <tr><td class="px-6 py-4">101</td><td class="px-6 py-4">Juan Pérez</td><td class="px-6 py-4">123456789</td><td class="px-6 py-4 text-green-600">Activo</td><td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-900 mr-2">Ver</button><button class="text-red-600 hover:text-red-900">Eliminar</button></td></tr>
+                        <!-- Client list will be populated here -->
                     </tbody>
                 </table>
             </div>
@@ -198,12 +367,12 @@
         
         <!-- Pantalla de Gestión de Planes -->
         <div id="plans-screen" class="screen">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Gestión de Planes</h1>
-                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            <div class="flex justify-between items-center mb-6 border-b-2 border-blue-500 pb-3">
+                <h1 class="text-3xl font-extrabold text-gray-800 flex items-center gap-3"><i data-lucide="package" class="w-8 h-8 text-blue-600"></i>Gestión de Planes</h1>
+                <button onclick="showScreen('dashboard-screen')" class="secondary-button"><i data-lucide="arrow-left" class="w-4 h-4"></i>Regresar</button>
             </div>
-            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Crear/Editar Plan</h2>
+            <div class="bg-slate-50 rounded-xl shadow-inner border border-slate-200 p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-700 mb-5 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-blue-500"></i>Crear/Editar Plan</h2>
                 <form id="plan-form" class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Nombre del Plan</label>
@@ -217,21 +386,21 @@
                         <label class="block text-sm font-medium text-gray-700">Costo Mensual</label>
                         <input type="number" id="plan-form-costo" class="w-full mt-1 px-3 py-2 border rounded-md">
                     </div>
-                    <div class="flex space-x-4">
-                        <button id="plan-form-button" type="button" onclick="handleSavePlan()" class="w-full bg-yellow-600 text-white font-bold py-2 px-4 rounded-md hover:bg-yellow-700 transition duration-300">Guardar Plan</button>
-                        <button id="cancel-edit-plan-button" type="button" onclick="cancelEditPlan()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar</button>
+                    <div class="flex space-x-4 pt-4">
+                        <button id="plan-form-button" type="button" onclick="handleSavePlan()" class="primary-blue-button w-full"><i data-lucide="save" class="w-5 h-5"></i>Guardar Plan</button>
+                        <button id="cancel-edit-plan-button" type="button" onclick="cancelEditPlan()" class="secondary-button w-full hidden"><i data-lucide="x" class="w-5 h-5"></i>Cancelar</button>
                     </div>
                 </form>
                 <div id="plan-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
             </div>
-            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Listado de Planes</h2>
-            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-5 mt-8 border-b-2 border-slate-300 pb-2 flex items-center gap-3"><i data-lucide="list-checks" class="w-6 h-6 text-slate-600"></i>Listado de Planes</h2>
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-100">
+                    <thead class="bg-gray-50">
                         <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Velocidad</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Costo</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
                     </thead>
                     <tbody id="plan-list-body" class="bg-white divide-y divide-gray-200">
-                        <tr><td class="px-6 py-4">PL01</td><td class="px-6 py-4">Plan Básico</td><td class="px-6 py-4">20 Mbps</td><td class="px-6 py-4">Q 150.00</td><td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-900">Editar</button></td></tr>
+                        <!-- Plan list will be populated here -->
                     </tbody>
                 </table>
             </div>
@@ -239,33 +408,32 @@
         
         <!-- Pantalla de Clasificación de Dispositivos -->
         <div id="device-class-screen" class="screen">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Clasificación de Dispositivos</h1>
-                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            <div class="flex justify-between items-center mb-6 border-b-2 border-blue-500 pb-3">
+                <h1 class="text-3xl font-extrabold text-gray-800 flex items-center gap-3"><i data-lucide="cpu" class="w-8 h-8 text-blue-600"></i>Clasificación de Dispositivos</h1>
+                <button onclick="showScreen('dashboard-screen')" class="secondary-button"><i data-lucide="arrow-left" class="w-4 h-4"></i>Regresar</button>
             </div>
-            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Nueva/Editar Clasificación</h2>
+            <div class="bg-slate-50 rounded-xl shadow-inner border border-slate-200 p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-700 mb-5 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-blue-500"></i>Nueva/Editar Clasificación</h2>
                 <form id="clasificacion-form" class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Nombre de la Clasificación</label>
                         <input type="text" id="clasificacion-form-nombre" class="w-full mt-1 px-3 py-2 border rounded-md">
                     </div>
-                    <div class="flex space-x-4">
-                        <button id="clasificacion-form-button" type="button" onclick="handleSaveClasificacion()" class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300">Guardar</button>
-                        <button id="cancel-edit-clasificacion-button" type="button" onclick="cancelEditClasificacion()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar</button>
+                    <div class="flex space-x-4 pt-4">
+                        <button id="clasificacion-form-button" type="button" onclick="handleSaveClasificacion()" class="primary-blue-button w-full"><i data-lucide="save" class="w-5 h-5"></i>Guardar</button>
+                        <button id="cancel-edit-clasificacion-button" type="button" onclick="cancelEditClasificacion()" class="secondary-button w-full hidden"><i data-lucide="x" class="w-5 h-5"></i>Cancelar</button>
                     </div>
                 </form>
                 <div id="clasificacion-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
             </div>
-            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Clasificaciones Existentes</h2>
-            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-5 mt-8 border-b-2 border-slate-300 pb-2 flex items-center gap-3"><i data-lucide="list-checks" class="w-6 h-6 text-slate-600"></i>Clasificaciones Existentes</h2>
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-100">
+                    <thead class="bg-gray-50">
                         <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
                     </thead>
                     <tbody id="clasificacion-list-body" class="bg-white divide-y divide-gray-200">
-                        <tr><td class="px-6 py-4">1</td><td class="px-6 py-4">Antena</td></tr>
-                        <tr><td class="px-6 py-4">2</td><td class="px-6 py-4">Router</td></tr>
+                        <!-- Classification list will be populated here -->
                     </tbody>
                 </table>
             </div>
@@ -273,12 +441,12 @@
         
         <!-- Pantalla de Gestión de Dispositivos -->
         <div id="devices-screen" class="screen">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Gestión de Dispositivos</h1>
-                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            <div class="flex justify-between items-center mb-6 border-b-2 border-blue-500 pb-3">
+                <h1 class="text-3xl font-extrabold text-gray-800 flex items-center gap-3"><i data-lucide="router" class="w-8 h-8 text-blue-600"></i>Gestión de Dispositivos</h1>
+                <button onclick="showScreen('dashboard-screen')" class="secondary-button"><i data-lucide="arrow-left" class="w-4 h-4"></i>Regresar</button>
             </div>
-            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Crear/Editar Dispositivo</h2>
+            <div class="bg-slate-50 rounded-xl shadow-inner border border-slate-200 p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-700 mb-5 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-blue-500"></i>Crear/Editar Dispositivo</h2>
                 <form id="dispositivo-form" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div><label class="block text-sm font-medium text-gray-700">Modelo</label><input type="text" id="dispositivo-form-modelo" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
@@ -288,9 +456,9 @@
                         <div><label class="block text-sm font-medium text-gray-700">SSID</label><input type="text" id="dispositivo-form-ssid" class="w-full mt-1 px-3 py-2 border rounded-md"></div>
                         <div><label class="block text-sm font-medium text-gray-700">Clasificación</label><select id="dispositivo-form-clasificacion" class="w-full mt-1 px-3 py-2 border rounded-md"></select></div>
                     </div>
-                    <div class="flex space-x-4">
-                        <button id="dispositivo-form-button" type="button" onclick="handleSaveDispositivo()" class="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">Guardar Dispositivo</button>
-                        <button id="cancel-edit-dispositivo-button" type="button" onclick="cancelEditDispositivo()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar</button>
+                    <div class="flex space-x-4 pt-4">
+                        <button id="dispositivo-form-button" type="button" onclick="handleSaveDispositivo()" class="primary-blue-button w-full"><i data-lucide="save" class="w-5 h-5"></i>Guardar Dispositivo</button>
+                        <button id="cancel-edit-dispositivo-button" type="button" onclick="cancelEditDispositivo()" class="secondary-button w-full hidden"><i data-lucide="x" class="w-5 h-5"></i>Cancelar</button>
                     </div>
                 </form>
                 <div id="dispositivo-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
@@ -298,22 +466,22 @@
 
             <!-- Formulario de Búsqueda -->
             <div class="mb-4">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Buscar Dispositivos</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-5 flex items-center gap-3"><i data-lucide="search" class="w-6 h-6 text-slate-600"></i>Buscar Dispositivos</h2>
                 <div class="flex space-x-2">
                     <input type="text" id="dispositivo-search-query" class="w-full px-3 py-2 border rounded-md" placeholder="Buscar por modelo o MAC...">
-                    <button onclick="handleSearchDispositivos()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Buscar</button>
-                    <button onclick="loadDispositivos()" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500">Limpiar</button>
+                    <button onclick="handleSearchDispositivos()" class="primary-blue-button"><i data-lucide="search" class="w-5 h-5"></i>Buscar</button>
+                    <button onclick="loadDispositivos()" class="secondary-button"><i data-lucide="rotate-cw" class="w-5 h-5"></i>Limpiar</button>
                 </div>
             </div>
 
-            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Listado de Dispositivos</h2>
-            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-5 mt-8 border-b-2 border-slate-300 pb-2 flex items-center gap-3"><i data-lucide="list-checks" class="w-6 h-6 text-slate-600"></i>Listado de Dispositivos</h2>
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-100">
+                    <thead class="bg-gray-50">
                         <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección MAC</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clasificación</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
                     </thead>
                     <tbody id="dispositivo-list-body" class="bg-white divide-y divide-gray-200">
-                        <tr><td class="px-6 py-4">D01</td><td class="px-6 py-4">Router XYZ</td><td class="px-6 py-4">00:1A:2B:3C:4D:5E</td><td class="px-6 py-4">Router</td></tr>
+                        <!-- Device list will be populated here -->
                     </tbody>
                 </table>
             </div>
@@ -321,12 +489,12 @@
         
         <!-- Pantalla de Gestión de Servicios -->
         <div id="services-screen" class="screen">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Gestión de Servicios</h1>
-                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            <div class="flex justify-between items-center mb-6 border-b-2 border-blue-500 pb-3">
+                <h1 class="text-3xl font-extrabold text-gray-800 flex items-center gap-3"><i data-lucide="globe" class="w-8 h-8 text-blue-600"></i>Gestión de Servicios</h1>
+                <button onclick="showScreen('dashboard-screen')" class="secondary-button"><i data-lucide="arrow-left" class="w-4 h-4"></i>Regresar</button>
             </div>
-            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Crear/Editar Servicio</h2>
+            <div class="bg-slate-50 rounded-xl shadow-inner border border-slate-200 p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-700 mb-5 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-blue-500"></i>Crear/Editar Servicio</h2>
                 <form id="servicio-form" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div><label class="block text-sm font-medium text-gray-700">Cliente</label><select id="servicio-form-cliente" class="w-full mt-1 px-3 py-2 border rounded-md"></select></div>
@@ -337,9 +505,9 @@
                         <div><label class="block text-sm font-medium text-gray-700">Estado</label><select id="servicio-form-estado" class="w-full mt-1 px-3 py-2 border rounded-md"><option value="ACTIVO">Activo</option><option value="SUSPENDIDO">Suspendido</option></select></div>
                         <div><label class="block text-sm font-medium text-gray-700">Monto de Descuento</label><input type="number" id="servicio-form-descuento" class="w-full mt-1 px-3 py-2 border rounded-md" value="0"></div>
                     </div>
-                    <div class="flex space-x-4">
-                        <button id="servicio-form-button" type="button" onclick="handleSaveServicio()" class="w-full bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition duration-300">Guardar Servicio</button>
-                        <button id="cancel-edit-servicio-button" type="button" onclick="cancelEditServicio()" class="w-full bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 hidden">Cancelar</button>
+                    <div class="flex space-x-4 pt-4">
+                        <button id="servicio-form-button" type="button" onclick="handleSaveServicio()" class="primary-blue-button w-full"><i data-lucide="save" class="w-5 h-5"></i>Guardar Servicio</button>
+                        <button id="cancel-edit-servicio-button" type="button" onclick="cancelEditServicio()" class="secondary-button w-full hidden"><i data-lucide="x" class="w-5 h-5"></i>Cancelar</button>
                     </div>
                 </form>
                 <div id="servicio-form-message" class="hidden p-4 rounded-md text-center text-sm mt-4"></div>
@@ -347,42 +515,40 @@
 
             <!-- Formulario de Búsqueda -->
             <div class="mb-4">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Buscar Servicios</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-5 flex items-center gap-3"><i data-lucide="search" class="w-6 h-6 text-slate-600"></i>Buscar Servicios</h2>
                 <div class="flex space-x-2">
                     <input type="text" id="servicio-search-query" class="w-full px-3 py-2 border rounded-md" placeholder="Buscar por cliente o MAC...">
-                    <button onclick="handleSearchServicios()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Buscar</button>
-                    <button onclick="loadServicios()" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500">Limpiar</button>
+                    <button onclick="handleSearchServicios()" class="primary-blue-button"><i data-lucide="search" class="w-5 h-5"></i>Buscar</button>
+                    <button onclick="loadServicios()" class="secondary-button"><i data-lucide="rotate-cw" class="w-5 h-5"></i>Limpiar</button>
                 </div>
             </div>
 
-            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Listado de Servicios</h2>
-            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-5 mt-8 border-b-2 border-slate-300 pb-2 flex items-center gap-3"><i data-lucide="list-checks" class="w-6 h-6 text-slate-600"></i>Listado de Servicios</h2>
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-100">
+                    <thead class="bg-gray-50">
                         <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dispositivo</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MAC</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clasificación</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Próximo Pago</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descuento</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
                     </thead>
                     <tbody id="servicio-list-body" class="bg-white divide-y divide-gray-200">
-                        <tr><td class="px-6 py-4">S01</td><td class="px-6 py-4">Juan Pérez</td><td class="px-6 py-4">Plan Básico</td><td class="px-6 py-4 text-green-600">Activo</td></tr>
+                        <!-- Service list will be populated here -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Pantalla de Registro de Pagos (código proporcionado por el usuario) -->
+        <!-- Pantalla de Registro de Pagos -->
         <div id="payments-screen" class="screen">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Gestión de Pagos</h1>
-                <button onclick="showScreen('dashboard-screen')" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300">Regresar</button>
+            <div class="flex justify-between items-center mb-6 border-b-2 border-blue-500 pb-3">
+                <h1 class="text-3xl font-extrabold text-gray-800 flex items-center gap-3"><i data-lucide="credit-card" class="w-8 h-8 text-blue-600"></i>Gestión de Pagos</h1>
+                <button onclick="showScreen('dashboard-screen')" class="secondary-button"><i data-lucide="arrow-left" class="w-4 h-4"></i>Regresar</button>
             </div>
-            <div class="bg-gray-50 rounded-lg p-6 mb-6 shadow-md">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Registrar Pago</h2>
+            <div class="bg-slate-50 rounded-xl shadow-inner border border-slate-200 p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-700 mb-5 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-blue-500"></i>Registrar Pago</h2>
                 <div class="space-y-4">
                     <div>
                         <label for="cliente_servicio" class="block text-sm font-medium text-gray-700">Cliente y Servicio</label>
                         <select id="cliente_servicio" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
-                            <option value="" disabled selected>Seleccione un cliente y servicio</option>
-                            <option value="1">Cliente A (Servicio 1) - Plan de Q100</option>
-                            <option value="2">Cliente B (Servicio 2) - Plan de Q150</option>
+                            <!-- Options will be populated here -->
                         </select>
                     </div>
                     <div>
@@ -404,32 +570,30 @@
                         <label for="comentario" class="block text-sm font-medium text-gray-700">Comentario</label>
                         <textarea id="comentario" name="comentario" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2" placeholder="Escriba un comentario sobre el pago..."></textarea>
                     </div>
-                    <div class="flex items-center justify-center">
-                        <button type="button" onclick="handleRegisterPago()" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Registrar Pago
-                        </button>
+                    <div class="flex items-center justify-center pt-4">
+                        <button type="button" onclick="handleRegisterPago()" class="primary-blue-button w-full"><i data-lucide="save" class="w-5 h-5"></i>Registrar Pago</button>
                     </div>
                 </div>
             </div>
             
             <!-- Formulario de Búsqueda -->
             <div class="mb-4">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Buscar Pagos</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-5 flex items-center gap-3"><i data-lucide="search" class="w-6 h-6 text-slate-600"></i>Buscar Pagos</h2>
                 <div class="flex space-x-2">
                     <input type="text" id="pago-search-query" class="w-full px-3 py-2 border rounded-md" placeholder="Buscar por nombre de cliente o comentario...">
-                    <button onclick="handleSearchPagos()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Buscar</button>
-                    <button onclick="loadPagos()" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-500">Limpiar</button>
+                    <button onclick="handleSearchPagos()" class="primary-blue-button"><i data-lucide="search" class="w-5 h-5"></i>Buscar</button>
+                    <button onclick="loadPagos()" class="secondary-button"><i data-lucide="rotate-cw" class="w-5 h-5"></i>Limpiar</button>
                 </div>
             </div>
 
-            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Historial de Pagos</h2>
-            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md p-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-5 mt-8 border-b-2 border-slate-300 pb-2 flex items-center gap-3"><i data-lucide="list-checks" class="w-6 h-6 text-slate-600"></i>Historial de Pagos</h2>
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-100">
+                    <thead class="bg-gray-50">
                         <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Pago</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comentario</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th></tr>
                     </thead>
                     <tbody id="pago-history-body" class="bg-white divide-y divide-gray-200">
-                        <tr><td class="px-6 py-4">PAG001</td><td class="px-6 py-4">01/01/2025</td><td class="px-6 py-4">Q 150.00</td><td class="px-6 py-4">Juan Pérez</td></tr>
+                        <!-- Payment history will be populated here -->
                     </tbody>
                 </table>
             </div>
@@ -454,6 +618,8 @@
             if (targetScreen) {
                 targetScreen.classList.add('active');
             }
+            // Renderizar íconos de Lucide cada vez que se muestra una pantalla
+            lucide.createIcons();
         }
 
         // Función para mostrar mensajes en diferentes partes de la UI
@@ -472,7 +638,6 @@
             const password = document.getElementById('password').value;
             const loginMessage = document.getElementById('login-message');
 
-            // Validar que los campos no estén vacíos
             if (!username || !password) {
                 showMessage(loginMessage, 'Por favor, ingrese su usuario y contraseña.', 'bg-yellow-100 text-yellow-700');
                 return;
@@ -481,20 +646,24 @@
             try {
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    // Asumiendo que el backend devuelve { "token": "jwt_token_aqui" }
                     jwtToken = data.token; 
-                    localStorage.setItem('jwtToken', jwtToken); // Guardar token para persistencia
+                    localStorage.setItem('jwtToken', jwtToken);
+
+                    const decodedToken = decodeJwt(jwtToken);
+                    console.log(decodedToken);
+                    if (decodedToken && decodedToken.rol) {
+                        localStorage.setItem('userRole', decodedToken.rol[0].authority);
+                    }
+
                     showScreen('dashboard-screen');
+                    updateMenuVisibility(); // New function to update menu visibility
                 } else {
-                    // Intentar leer el mensaje de error del backend
                     const errorData = await response.json().catch(() => ({ message: 'Error de autenticación. Verifique sus credenciales.' }));
                     showMessage(loginMessage, errorData.message || 'Error de autenticación.', 'bg-red-100 text-red-700');
                 }
@@ -506,8 +675,34 @@
 
         function handleLogout() {
             localStorage.removeItem('jwtToken');
+            localStorage.removeItem('userRole');
             jwtToken = null;
             showScreen('login-screen');
+        }
+
+        function decodeJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function updateMenuVisibility() {
+            const userRole = localStorage.getItem('userRole');
+            console.log("User role:", userRole);
+
+            if (userRole === 'TECNICO') {
+                document.querySelector('button[onclick="loadUsersAndShowScreen()"]').style.display = 'none';
+                document.querySelector('button[onclick="loadPagosAndShowScreen()"]').style.display = 'none';
+                document.querySelector('button[onclick="loadClasificacionesAndShowScreen()"]').style.display = 'none';
+                document.querySelector('button[onclick="loadPlansAndShowScreen()"]').style.display = 'none';
+            } else {
+                document.querySelector('button[onclick="loadUsersAndShowScreen()"]').style.display = 'flex';
+                document.querySelector('button[onclick="loadPagosAndShowScreen()"]').style.display = 'flex';
+                document.querySelector('button[onclick="loadClasificacionesAndShowScreen()"]').style.display = 'flex';
+                document.querySelector('button[onclick="loadPlansAndShowScreen()"]').style.display = 'flex';
+            }
         }
 
         // Al cargar la página, verificar si hay un token guardado
@@ -515,18 +710,117 @@
             const token = localStorage.getItem('jwtToken');
             if (token) {
                 jwtToken = token;
+                const decodedToken = decodeJwt(jwtToken);
+                if (decodedToken) {
+                    localStorage.setItem('userRole', decodedToken.rol[0].authority);
+                }
                 showScreen('dashboard-screen');
+                updateMenuVisibility();
             }
+            // Inicializa los íconos de Lucide
+            lucide.createIcons();
         });
 
         // --- Lógica para la Gestión de Usuarios ---
+        let editingUserId = null;
+        let usersCache = []; // Cache for users to avoid re-fetching for edits
+
+        // Función para mostrar mensajes de estado en la UI de gestión de usuarios
+        function showStatus(message, type) {
+            const statusMessageElement = document.getElementById('status-message');
+            statusMessageElement.textContent = message;
+            statusMessageElement.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800', 'bg-blue-100', 'text-blue-800', 'bg-yellow-100', 'text-yellow-700');
+            
+            if (type === 'success') {
+                statusMessageElement.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                statusMessageElement.classList.add('bg-red-100', 'text-red-800');
+            } else if (type === 'info') {
+                statusMessageElement.classList.add('bg-blue-100', 'text-blue-800');
+            } else { // default or warning
+                statusMessageElement.classList.add('bg-yellow-100', 'text-yellow-700');
+            }
+            statusMessageElement.classList.remove('hidden');
+            
+            setTimeout(() => {
+                statusMessageElement.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Renderiza la lista completa de usuarios.
+        function renderUsers() {
+            const usersList = document.getElementById('users-list');
+            usersList.innerHTML = '';
+            if (usersCache.length === 0) {
+                usersList.innerHTML = '<p class="text-gray-500 italic p-4 bg-white rounded-lg border border-gray-200 shadow-sm">No hay usuarios registrados.</p>';
+                return;
+            }
+
+            // Sort users alphabetically by username
+            usersCache.sort((a, b) => a.username.localeCompare(b.username)).forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.className = 'flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white border border-slate-200 rounded-lg shadow-md hover:shadow-lg transition-shadow';
+                
+                let roleColorClass, roleBgClass, roleIcon;
+                const roleName = user.rol ? user.rol.nombreRol : 'Sin rol';
+
+                if (roleName === 'ADMINISTRADOR') {
+                    roleColorClass = 'text-blue-900';
+                    roleBgClass = 'bg-blue-100';
+                    roleIcon = 'crown';
+                } else if (roleName === 'TECNICO') {
+                    roleColorClass = 'text-cyan-800';
+                    roleBgClass = 'bg-cyan-100';
+                    roleIcon = 'hard-hat';
+                } else { // Default for other roles or 'Sin rol'
+                    roleColorClass = 'text-slate-700';
+                    roleBgClass = 'bg-slate-100';
+                    roleIcon = 'eye';
+                }
+
+                userCard.innerHTML = `
+                    <div class="mb-2 sm:mb-0 min-w-0 flex-grow">
+                        <p class="text-lg font-semibold text-gray-800 truncate flex items-center gap-2">
+                            <i data-lucide="user-circle" class="w-5 h-5 text-blue-500"></i> ${user.nombre || ''} ${user.apellido || ''} 
+                        </p>
+                        <p class="text-sm font-normal text-gray-500 flex items-center gap-1 ml-7 mt-0.5">
+                            <i data-lucide="at-sign" class="w-3.5 h-3.5 text-slate-400"></i> ${user.username}
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-3 flex-shrink-0 mt-2 sm:mt-0">
+                        <span class="text-xs font-bold uppercase px-2.5 py-1 rounded-full ${roleColorClass} ${roleBgClass} flex items-center gap-1.5 shadow-sm">
+                             <i data-lucide="${roleIcon}" class="w-3.5 h-3.5"></i> ${roleName}
+                        </span>
+                        
+                        <button data-id="${user.idUsuario}" class="edit-btn text-blue-500 hover:text-blue-700 transition-colors p-1.5 rounded-md hover:bg-blue-50" title="Editar">
+                            <i data-lucide="square-pen" class="w-5 h-5"></i>
+                        </button>
+                        
+                        <button data-id="${user.idUsuario}" class="delete-btn text-red-500 hover:text-red-700 transition-colors p-1.5 rounded-md hover:bg-red-50" title="Eliminar">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+                usersList.appendChild(userCard);
+            });
+
+            lucide.createIcons(); // Re-execute Lucide after adding new elements to the DOM
+
+            // Re-attach listeners after rendering
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', handleEditUser);
+            });
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', handleDeleteUser);
+            });
+        }
 
         async function loadUsers() {
-            const userListBody = document.getElementById('user-list-body');
-            userListBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Cargando...</td></tr>'; // Indicador de carga
+            const usersList = document.getElementById('users-list');
+            usersList.innerHTML = '<p class="text-center py-4 text-gray-500">Cargando usuarios...</p>';
 
             if (!jwtToken) {
-                showMessage(document.getElementById('login-message'), 'Tu sesión ha expirado. Por favor, inicia sesión de nuevo.', 'bg-red-100 text-red-700');
+                showStatus('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.', 'error');
                 showScreen('login-screen');
                 return;
             }
@@ -534,51 +828,154 @@
             try {
                 const response = await fetch('/api/usuarios', {
                     method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${jwtToken}`
-                    }
+                    headers: { 'Authorization': `Bearer ${jwtToken}` }
                 });
 
-                if (response.status === 403) { // Prohibido, el token puede haber expirado
-                    showMessage(document.getElementById('login-message'), 'Tu sesión ha expirado o no tienes permisos. Por favor, inicia sesión de nuevo.', 'bg-red-100 text-red-700');
+                if (response.status === 403) {
+                    showStatus('Tu sesión ha expirado o no tienes permisos. Por favor, inicia sesión de nuevo.', 'error');
                     showScreen('login-screen');
                     return;
                 }
 
-                if (!response.ok) {
-                    throw new Error('Error al cargar los usuarios.');
-                }
+                if (!response.ok) throw new Error('Error al cargar los usuarios.');
 
                 const users = await response.json();
-                
-                userListBody.innerHTML = ''; // Limpiar el indicador de carga
-
-                if (users.length === 0) {
-                    userListBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">No se encontraron usuarios.</td></tr>';
-                    return;
-                }
-
-                users.forEach(user => {
-                    const roleName = user.rol ? user.rol.nombreRol : 'Sin rol';
-                    
-                    const row = `
-                        <tr>
-                            <td class="px-6 py-4">${user.idUsuario}</td>
-                            <td class="px-6 py-4">${user.username}</td>
-                            <td class="px-6 py-4">${user.username}</td>
-                            <td class="px-6 py-4">${roleName}</td>
-                            <td class="px-6 py-4">
-                                <button onclick="startEditUser(${user.idUsuario}, '${user.username}', '${roleName}')" class="text-indigo-600 hover:text-indigo-900 mr-2">Editar</button>
-                                <button onclick="handleDeleteUser(${user.idUsuario})" class="text-red-600 hover:text-red-900">Eliminar</button>
-                            </td>
-                        </tr>
-                    `;
-                    userListBody.innerHTML += row;
-                });
+                usersCache = users; // Cache the fetched users
+                renderUsers();
 
             } catch (error) {
                 console.error('Error en loadUsers:', error);
-                userListBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Error al cargar los datos.</td></tr>';
+                showStatus('Error al cargar los datos de usuarios.', 'error');
+                usersList.innerHTML = '<p class="text-center py-4 text-red-500">Error al cargar los datos.</p>';
+            }
+        }
+
+        function handleEditUser(event) {
+            const userId = parseInt(event.currentTarget.dataset.id);
+            const user = usersCache.find(u => u.idUsuario === userId);
+
+            if (user) {
+                editingUserId = user.idUsuario;
+                userNameInput.value = user.nombre || '';
+                userLastnameInput.value = user.apellido || '';
+                userUsernameInput.value = user.username;
+                userRoleSelect.value = user.rol ? user.rol.nombreRol : '';
+                
+                userPasswordInput.value = ''; 
+                userPasswordInput.placeholder = 'Dejar vacío para no cambiar';
+
+                saveButtonText.textContent = 'Actualizar Usuario';
+                saveButton.innerHTML = `<i data-lucide="save" class="w-5 h-5"></i> <span id="save-button-text">Actualizar Usuario</span>`;
+                lucide.createIcons();
+                cancelButton.classList.remove('hidden');
+                
+                userNameInput.focus();
+                
+                showStatus(`Modo Edición: Editando a ${user.nombre || ''} ${user.apellido || ''}.`, 'info');
+            }
+        }
+
+        async function handleDeleteUser(event) {
+            const userId = parseInt(event.currentTarget.dataset.id);
+            if (!confirm(`¿Estás seguro de que quieres eliminar al usuario con ID ${userId}?`)) return;
+
+            try {
+                const response = await fetch(`/api/usuarios/${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${jwtToken}` }
+                });
+
+                if (response.ok) {
+                    showStatus('¡Usuario eliminado con éxito!', 'success');
+                    await loadUsers();
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    showStatus(errorData.message || 'Error al eliminar el usuario.', 'error');
+                }
+            } catch (error) {
+                console.error('Error en handleDeleteUser:', error);
+                showStatus('No se pudo conectar con el servidor.', 'error');
+            }
+        }
+
+        function cancelEdit() {
+            editingUserId = null;
+            document.getElementById('user-form').reset();
+            userPasswordInput.placeholder = 'Mínimo 8 caracteres';
+            saveButtonText.textContent = 'Guardar Usuario';
+            saveButton.innerHTML = `<i data-lucide="save" class="w-5 h-5"></i> <span id="save-button-text">Guardar Usuario</span>`;
+            lucide.createIcons();
+            cancelButton.classList.add('hidden');
+        }
+
+        async function handleSaveUser() {
+            initializeUserFormElements();
+            const username = userUsernameInput.value.trim();
+            const password = userPasswordInput.value;
+            const role = userRoleSelect.value;
+            const nombre = userNameInput.value.trim();
+            const apellido = userLastnameInput.value.trim();
+
+            if (!username || !role) {
+                showStatus('El nombre de usuario y el rol son requeridos.', 'warning');
+                return;
+            }
+
+            if (!editingUserId && !password) {
+                showStatus('La contraseña es requerida para nuevos usuarios.', 'warning');
+                return;
+            }
+            
+            if (password && password.length < 8) {
+                showStatus('La contraseña debe tener al menos 8 caracteres.', 'warning');
+                return;
+            }
+
+            let url;
+            let method;
+            let body;
+
+            if (editingUserId) {
+                url = `/api/usuarios/${editingUserId}`;
+                method = 'PUT';
+                        body = {
+                            nombre: nombre,
+                            apellido: apellido,
+                            username: username,
+                            ...(password && { password: password }),
+                            role: role
+                        };            } else {
+                url = '/api/auth/register';
+                method = 'POST';
+                body = {
+                    nombre: nombre,
+                    apellido: apellido,
+                    username: username,
+                    password: password,
+                    role: role
+                };
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` },
+                    body: JSON.stringify(body)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const successMessage = editingUserId ? '¡Usuario actualizado con éxito!' : '¡Usuario creado con éxito!';
+                    showStatus(successMessage, 'success');
+                    cancelEdit();
+                    await loadUsers();
+                } else {
+                    const errorData = await response.json().catch(() => ({ message: 'Error al guardar el usuario.' }));
+                    showStatus(errorData.message || 'Error al guardar el usuario.', 'error');
+                }
+            } catch (error) {
+                console.error('Error en handleSaveUser:', error);
+                showStatus('No se pudo conectar con el servidor.', 'error');
             }
         }
 
@@ -587,17 +984,42 @@
             showScreen('users-screen');
         }
 
+        // --- Lógica para Crear y Editar Usuarios ---
+        // Declare these variables globally but assign them inside a function
+        // that runs when the screen is active to ensure elements are in DOM.
+        let userNameInput;
+        let userLastnameInput;
+        let userUsernameInput;
+        let userPasswordInput;
+        let userRoleSelect;
+        let saveButton;
+        let saveButtonText;
+        let cancelButton;
+
+        function initializeUserFormElements() {
+            userNameInput = document.getElementById('user-name');
+            userLastnameInput = document.getElementById('user-lastname');
+            userUsernameInput = document.getElementById('user-username');
+            userPasswordInput = document.getElementById('user-password');
+            userRoleSelect = document.getElementById('user-role');
+            saveButton = document.getElementById('save-button');
+            saveButtonText = document.getElementById('save-button-text');
+            cancelButton = document.getElementById('cancel-edit-button');
+        }
+
+
+
         // --- Lógica para Gestión de Clientes ---
         let editingClienteId = null;
 
         function loadClientesAndShowScreen() {
-            loadClientes(); // Carga todos los clientes al entrar
+            loadClientes();
             showScreen('clients-screen');
         }
 
         function handleSearchClientes() {
             const query = document.getElementById('cliente-search-query').value;
-            loadClientes(query); // Llama a loadClientes con el término de búsqueda
+            loadClientes(query);
         }
 
         function startEditCliente(cliente) {
@@ -608,7 +1030,6 @@
             document.getElementById('cliente-form-direccion').value = cliente.direccion;
             document.getElementById('cliente-form-dpi').value = cliente.dpi;
             document.getElementById('cliente-form-estado').value = cliente.estadoCliente;
-
             document.getElementById('cliente-form-button').textContent = 'Actualizar Cliente';
             document.getElementById('cancel-edit-cliente-button').classList.remove('hidden');
         }
@@ -646,7 +1067,7 @@
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` },
                     body: JSON.stringify(body)
                 });
-                const result = await response.json(); // La API siempre devuelve un ApiResponseDTO
+                const result = await response.json();
 
                 if (result.success) {
                     showMessage(formMessage, result.message, 'bg-green-100 text-green-700');
@@ -702,7 +1123,7 @@
                 }
 
                 data.forEach(item => {
-                    const itemDataString = JSON.stringify(item).replace(/'/g, "\\'");
+                    const itemDataString = JSON.stringify(item).replace(/'/g, "'");
                     const estadoClass = item.estadoCliente === 'ACTIVO' ? 'text-green-600' : 'text-red-600';
                     listBody.innerHTML += `
                         <tr>
@@ -736,7 +1157,6 @@
             document.getElementById('plan-form-nombre').value = plan.nombrePlan;
             document.getElementById('plan-form-velocidad').value = plan.velocidad;
             document.getElementById('plan-form-costo').value = plan.costoMensual;
-
             document.getElementById('plan-form-button').textContent = 'Actualizar Plan';
             document.getElementById('cancel-edit-plan-button').classList.remove('hidden');
         }
@@ -763,17 +1183,12 @@
             const method = editingPlanId ? 'PUT' : 'POST';
 
             const body = { nombrePlan, velocidad, costoMensual };
-            if (editingPlanId) {
-                body.idPlan = editingPlanId;
-            }
+            if (editingPlanId) body.idPlan = editingPlanId;
 
             try {
                 const response = await fetch(url, {
                     method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${jwtToken}`
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` },
                     body: JSON.stringify(body)
                 });
 
@@ -819,16 +1234,11 @@
             planListBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Cargando...</td></tr>';
 
             try {
-                const response = await fetch('/api/planes', {
-                    headers: { 'Authorization': `Bearer ${jwtToken}` }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Error al cargar los planes.');
-                }
+                const response = await fetch('/api/planes', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                if (!response.ok) throw new Error('Error al cargar los planes.');
 
                 const planes = await response.json();
-                planListBody.innerHTML = ''; // Limpiar
+                planListBody.innerHTML = '';
 
                 if (planes.length === 0) {
                     planListBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">No se encontraron planes.</td></tr>';
@@ -836,7 +1246,7 @@
                 }
 
                 planes.forEach(plan => {
-                    const planDataString = JSON.stringify(plan).replace(/'/g, "\'");
+                    const planDataString = JSON.stringify(plan).replace(/'/g, "'");
                     const row = `
                         <tr>
                             <td class="px-6 py-4">${plan.idPlan}</td>
@@ -943,7 +1353,7 @@
                     return;
                 }
                 data.forEach(item => {
-                    const itemDataString = JSON.stringify(item).replace(/'/g, "\\'");
+                    const itemDataString = JSON.stringify(item).replace(/'/g, "'");
                     listBody.innerHTML += `
                         <tr>
                             <td class="px-6 py-4">${item.idClasificacion}</td>
@@ -955,16 +1365,17 @@
                         </tr>`;
                 });
             } catch (error) {
+                listBody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-red-500">Error al cargar datos.</td></tr>';
             }
         }
 
         // --- Lógica para Gestión de Dispositivos ---
         let editingDispositivoId = null;
-        let clasificacionesCache = []; // Cache para no recargar las clasificaciones cada vez
+        let clasificacionesCache = [];
 
         async function loadDispositivosAndShowScreen() {
             await loadDispositivos();
-            await loadClasificacionesIntoSelect(); // Cargar el dropdown
+            await loadClasificacionesIntoSelect();
             showScreen('devices-screen');
         }
 
@@ -975,7 +1386,7 @@
 
         async function loadClasificacionesIntoSelect() {
             const select = document.getElementById('dispositivo-form-clasificacion');
-            if (clasificacionesCache.length === 0) { // Cargar solo si el cache está vacío
+            if (clasificacionesCache.length === 0) {
                 try {
                     const response = await fetch('/api/clasificaciones', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
                     if (!response.ok) throw new Error('Error de red.');
@@ -997,7 +1408,6 @@
             document.getElementById('dispositivo-form-wifi').value = dispositivo.contrasenaWifi;
             document.getElementById('dispositivo-form-ssid').value = dispositivo.ssid;
             document.getElementById('dispositivo-form-clasificacion').value = dispositivo.idClasificacion;
-
             document.getElementById('dispositivo-form-button').textContent = 'Actualizar Dispositivo';
             document.getElementById('cancel-edit-dispositivo-button').classList.remove('hidden');
         }
@@ -1085,13 +1495,12 @@
                     listBody.innerHTML = '<tr><td colspan="5" class="text-center py-4">No hay dispositivos.</td></tr>';
                     return;
                 }
-                // Para mostrar el nombre de la clasificación, necesitamos el cache
                 if (clasificacionesCache.length === 0) await loadClasificacionesIntoSelect();
 
                 data.forEach(item => {
                     const clasificacion = clasificacionesCache.find(c => c.idClasificacion === item.idClasificacion);
                     const clasificacionNombre = clasificacion ? clasificacion.nombreClasificacion : 'N/A';
-                    const itemDataString = JSON.stringify(item).replace(/'/g, "\\'");
+                    const itemDataString = JSON.stringify(item).replace(/'/g, "'");
                     listBody.innerHTML += `
                         <tr>
                             <td class="px-6 py-4">${item.idDispositivo}</td>
@@ -1109,271 +1518,180 @@
             }
         }
 
-                let editingServicioId = null;
-                let clientesCache = [], planesCache = [], dispositivosCache = []; // Caches para los dropdowns
-        
-                        async function loadServiciosAndShowScreen() {
-                            cancelEditServicio(); // Limpiar el formulario
-                            await loadPrerequisitesForServicioForm(); // 1. Cargar prerrequisitos PRIMERO
-                            await loadServicios(); // 2. Cargar servicios DESPUÉS
-                            showScreen('services-screen'); // 3. Mostrar la pantalla
-                        }
-                
-                        function handleSearchServicios() {
-                            const query = document.getElementById('servicio-search-query').value;
-                            loadServicios(query);
-                        }        
-                async function loadPrerequisitesForServicioForm() {
-                    // Cargar Clientes, Planes y Dispositivos en paralelo
-                    const [clientesRes, planesRes, dispositivosRes, clasificacionesRes] = await Promise.all([
-                        fetch('/api/clientes', { headers: { 'Authorization': `Bearer ${jwtToken}` } }),
-                        fetch('/api/planes', { headers: { 'Authorization': `Bearer ${jwtToken}` } }),
-                        fetch('/api/dispositivos', { headers: { 'Authorization': `Bearer ${jwtToken}` } }),
-                        fetch('/api/clasificaciones', { headers: { 'Authorization': `Bearer ${jwtToken}` } })
-                    ]);
-        
-                    if (clientesRes.ok) {
-                        const clientesResult = await clientesRes.json();
-                        clientesCache = clientesResult.data;
-                        const clienteSelect = document.getElementById('servicio-form-cliente');
-                        clienteSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Cliente --</option>' +
-                                                  clientesCache.map(c => `<option value="${c.idCliente}">${c.nombre} ${c.apellido}</option>`).join('');
-                    }
-                    if (planesRes.ok) {
-                        planesCache = await planesRes.json();
-                        const planSelect = document.getElementById('servicio-form-plan');
-                        planSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Plan --</option>' +
-                                               planesCache.map(p => `<option value="${p.idPlan}">${p.nombrePlan}</option>`).join('');
-                    }
-                    if (dispositivosRes.ok) {
-                        dispositivosCache = await dispositivosRes.json();
-                        const dispositivoSelect = document.getElementById('servicio-form-dispositivo');
-                        dispositivoSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Dispositivo --</option>' +
-                                                      dispositivosCache.map(d => `<option value="${d.idDispositivo}">${d.modelo} (${d.direccionMac})</option>`).join('');
-                    }
-                    if (clasificacionesRes.ok) {
-                        clasificacionesCache = await clasificacionesRes.json(); // Guardar en la caché global
-                    }
-                }
-        
-                function startEditServicio(servicio) {
-                    editingServicioId = servicio.idServicio;
-                    document.getElementById('servicio-form-cliente').value = servicio.idCliente;
-                    document.getElementById('servicio-form-plan').value = servicio.plan.idPlan;
-                    document.getElementById('servicio-form-dispositivo').value = servicio.dispositivo.idDispositivo;
-                    document.getElementById('servicio-form-fecha-activacion').value = new Date(servicio.fechaActivacion).toISOString().split('T')[0];
-                    document.getElementById('servicio-form-proximo-pago').value = new Date(servicio.proximoPago).toISOString().split('T')[0];
-                    document.getElementById('servicio-form-estado').value = servicio.estadoServicio;
-                    document.getElementById('servicio-form-descuento').value = servicio.descuentoMonto;
-        
-                    document.getElementById('servicio-form-button').textContent = 'Actualizar Servicio';
-                    document.getElementById('cancel-edit-servicio-button').classList.remove('hidden');
-                }
-        
-                function cancelEditServicio() {
-                    editingServicioId = null;
-                    document.getElementById('servicio-form').reset();
-                    document.getElementById('servicio-form-button').textContent = 'Guardar Servicio';
-                    document.getElementById('cancel-edit-servicio-button').classList.add('hidden');
-                }
-        
-                async function handleSaveServicio() {
-                    const formMessage = document.getElementById('servicio-form-message');
-                    const body = {
-                        idCliente: parseInt(document.getElementById('servicio-form-cliente').value, 10),
-                        idPlan: parseInt(document.getElementById('servicio-form-plan').value, 10),
-                        idDispositivo: parseInt(document.getElementById('servicio-form-dispositivo').value, 10),
-                        fechaActivacion: document.getElementById('servicio-form-fecha-activacion').value,
-                        proximoPago: document.getElementById('servicio-form-proximo-pago').value,
-                        estadoServicio: document.getElementById('servicio-form-estado').value,
-                        descuentoMonto: parseFloat(document.getElementById('servicio-form-descuento').value)
-                    };
-        
-                    if (isNaN(body.idCliente) || isNaN(body.idPlan) || isNaN(body.idDispositivo)) {
-                        showMessage(formMessage, 'Cliente, Plan y Dispositivo son requeridos.', 'bg-yellow-100 text-yellow-700');
-                        return;
-                    }
-        
-                    const url = editingServicioId ? `/api/servicios/${editingServicioId}` : '/api/servicios';
-                    const method = editingServicioId ? 'PUT' : 'POST';
-                    if (editingServicioId) body.idServicio = editingServicioId;
-        
-                    try {
-                        const response = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` }, body: JSON.stringify(body) });
-                        const result = await response.json();
-                        if (result.success) {
-                            showMessage(formMessage, result.message, 'bg-green-100 text-green-700');
-                            cancelEditServicio();
-                            await loadServicios();
-                        } else {
-                            showMessage(formMessage, result.message || 'Error al guardar.', 'bg-red-100 text-red-700');
-                        }
-                    } catch (error) {
-                        showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
-                    }
-                }
-        
-                async function handleDeleteServicio(id) {
-                    if (!confirm(`¿Seguro que quieres eliminar el servicio con ID ${id}?`)) return;
-                    const formMessage = document.getElementById('servicio-form-message');
-                    try {
-                        const response = await fetch(`/api/servicios/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${jwtToken}` } });
-                        const result = await response.json();
-                        if (result.success) {
-                            showMessage(formMessage, result.message, 'bg-green-100 text-green-700');
-                            await loadServicios();
-                        } else {
-                            showMessage(formMessage, result.message || 'Error al eliminar.', 'bg-red-100 text-red-700');
-                        }
-                    } catch (error) {
-                        showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
-                    }
-                }
-        
-                        async function loadServicios(query = '') {
-                            const listBody = document.getElementById('servicio-list-body');
-                            listBody.innerHTML = '<tr><td colspan="10" class="text-center py-4">Cargando...</td></tr>';
-                            
-                            const url = query ? `/api/servicios/buscar?query=${encodeURIComponent(query)}` : '/api/servicios';
-                
-                            try {
-                                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${jwtToken}` } });                        const result = await response.json();
-                        if (!result.success) throw new Error(result.message || 'Error de red.');
-                        const data = result.data;
-                        listBody.innerHTML = '';
-                        if (data.length === 0) {
-                            listBody.innerHTML = '<tr><td colspan="10" class="text-center py-4">No hay servicios.</td></tr>';
-                            return;
-                        }
-        
-                        data.forEach(item => {
-                            const cliente = clientesCache.find(c => c.idCliente === item.idCliente);
-                            const clienteNombre = cliente ? `${cliente.nombre} ${cliente.apellido}` : 'N/A';
-                            const planNombre = item.plan ? item.plan.nombrePlan : 'N/A';
-                            const dispositivoNombre = item.dispositivo ? item.dispositivo.modelo : 'N/A';
-                            const dispositivoMac = item.dispositivo ? item.dispositivo.direccionMac : 'N/A';
-                            const clasificacion = item.dispositivo && clasificacionesCache.find(c => c.idClasificacion === item.dispositivo.idClasificacion);
-                            const clasificacionNombre = clasificacion ? clasificacion.nombreClasificacion : 'N/A';
-                            const proximoPagoFormateado = new Date(item.proximoPago).toLocaleDateString();
-                            const descuentoFormateado = `Q${item.descuentoMonto.toFixed(2)}`;
-                            const estadoClass = item.estadoServicio === 'ACTIVO' ? 'text-green-600' : 'text-red-600';
-                            const itemDataString = JSON.stringify(item).replace(/'/g, "\\'");
-        
-                            listBody.innerHTML += `
-                                <tr>
-                                    <td class="px-6 py-4">${item.idServicio}</td>
-                                    <td class="px-6 py-4">${clienteNombre}</td>
-                                    <td class="px-6 py-4">${planNombre}</td>
-                                    <td class="px-6 py-4">${dispositivoNombre}</td>
-                                    <td class="px-6 py-4">${dispositivoMac}</td>
-                                    <td class="px-6 py-4">${clasificacionNombre}</td>
-                                    <td class="px-6 py-4">${proximoPagoFormateado}</td>
-                                    <td class="px-6 py-4">${descuentoFormateado}</td>
-                                    <td class="px-6 py-4 font-bold ${estadoClass}">${item.estadoServicio}</td>
-                                    <td class="px-6 py-4">
-                                        <button onclick='startEditServicio(${itemDataString})' class="text-indigo-600 hover:text-indigo-900">Editar</button>
-                                        <button onclick="handleDeleteServicio(${item.idServicio})" class="text-red-600 hover:text-red-900 ml-2">Eliminar</button>
-                                    </td>
-                                </tr>`;
-                        });
-                    } catch (error) {
-                        listBody.innerHTML = `<tr><td colspan="10" class="text-center py-4 text-red-500">${error.message || "Error al cargar datos."}</td></tr>`;
-                    }
-                }
-        // --- Lógica para Crear y Editar Usuarios ---
-        let editingUserId = null; // Variable para saber si estamos editando
+        // --- Lógica para Gestión de Servicios ---
+        let editingServicioId = null;
+        let clientesCache = [], planesCache = [], dispositivosCache = [];
 
-        function startEditUser(id, username, role) {
-            editingUserId = id;
-            document.getElementById('user-form-username').value = username;
-            document.getElementById('user-form-role').value = role;
-            document.getElementById('user-form-password').value = ''; // Limpiar campo de contraseña
-            document.getElementById('user-form-password').placeholder = 'Dejar en blanco para no cambiar';
-            
-            // Cambiar el texto del botón y mostrar botón de cancelar
-            document.getElementById('user-form-button').textContent = 'Actualizar Usuario';
-            document.getElementById('cancel-edit-button').classList.remove('hidden');
+        async function loadServiciosAndShowScreen() {
+            cancelEditServicio();
+            await loadPrerequisitesForServicioForm();
+            await loadServicios();
+            showScreen('services-screen');
         }
 
-        function cancelEdit() {
-            editingUserId = null;
-            document.getElementById('user-form').reset();
-            document.getElementById('user-form-password').placeholder = '';
-            document.getElementById('user-form-button').textContent = 'Guardar Usuario';
-            document.getElementById('cancel-edit-button').classList.add('hidden');
-        }
+        function handleSearchServicios() {
+            const query = document.getElementById('servicio-search-query').value;
+            loadServicios(query);
+        }        
 
-        async function handleSaveUser() {
-            const username = document.getElementById('user-form-username').value;
-            const password = document.getElementById('user-form-password').value;
-            const role = document.getElementById('user-form-role').value;
-            const formMessage = document.getElementById('user-form-message');
+        async function loadPrerequisitesForServicioForm() {
+            const [clientesRes, planesRes, dispositivosRes, clasificacionesRes] = await Promise.all([
+                fetch('/api/clientes', { headers: { 'Authorization': `Bearer ${jwtToken}` } }),
+                fetch('/api/planes', { headers: { 'Authorization': `Bearer ${jwtToken}` } }),
+                fetch('/api/dispositivos', { headers: { 'Authorization': `Bearer ${jwtToken}` } }),
+                fetch('/api/clasificaciones', { headers: { 'Authorization': `Bearer ${jwtToken}` } })
+            ]);
 
-            if (!username || !role) {
-                showMessage(formMessage, 'El nombre de usuario y el rol son requeridos.', 'bg-yellow-100 text-yellow-700');
-                return;
+            if (clientesRes.ok) {
+                const clientesResult = await clientesRes.json();
+                clientesCache = clientesResult.data;
+                const clienteSelect = document.getElementById('servicio-form-cliente');
+                clienteSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Cliente --</option>' +
+                                          clientesCache.map(c => `<option value="${c.idCliente}">${c.nombre} ${c.apellido}</option>`).join('');
             }
+            if (planesRes.ok) {
+                planesCache = await planesRes.json();
+                const planSelect = document.getElementById('servicio-form-plan');
+                planSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Plan --</option>' +
+                                       planesCache.map(p => `<option value="${p.idPlan}">${p.nombrePlan}</option>`).join('');
+            }
+            if (dispositivosRes.ok) {
+                dispositivosCache = await dispositivosRes.json();
+                const dispositivoSelect = document.getElementById('servicio-form-dispositivo');
+                dispositivoSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Dispositivo --</option>' +
+                                              dispositivosCache.map(d => `<option value="${d.idDispositivo}">${d.modelo} (${d.direccionMac})</option>`).join('');
+            }
+            if (clasificacionesRes.ok) {
+                clasificacionesCache = await clasificacionesRes.json();
+            }
+        }
 
-            const url = editingUserId ? `/api/usuarios/${editingUserId}` : '/api/auth/register';
-            const method = editingUserId ? 'PUT' : 'POST';
+        function startEditServicio(servicio) {
+            editingServicioId = servicio.idServicio;
+            document.getElementById('servicio-form-cliente').value = servicio.idCliente;
+            document.getElementById('servicio-form-plan').value = servicio.plan.idPlan;
+            document.getElementById('servicio-form-dispositivo').value = servicio.dispositivo.idDispositivo;
+            document.getElementById('servicio-form-fecha-activacion').value = new Date(servicio.fechaActivacion).toISOString().split('T')[0];
+            document.getElementById('servicio-form-proximo-pago').value = new Date(servicio.proximoPago).toISOString().split('T')[0];
+            document.getElementById('servicio-form-estado').value = servicio.estadoServicio;
+            document.getElementById('servicio-form-descuento').value = servicio.descuentoMonto;
+            document.getElementById('servicio-form-button').textContent = 'Actualizar Servicio';
+            document.getElementById('cancel-edit-servicio-button').classList.remove('hidden');
+        }
 
+        function cancelEditServicio() {
+            editingServicioId = null;
+            document.getElementById('servicio-form').reset();
+            document.getElementById('servicio-form-button').textContent = 'Guardar Servicio';
+            document.getElementById('cancel-edit-servicio-button').classList.add('hidden');
+        }
+
+        async function handleSaveServicio() {
+            const formMessage = document.getElementById('servicio-form-message');
             const body = {
-                username,
-                password: password || null, // Enviar null si está vacío para no actualizar
-                role
+                idCliente: parseInt(document.getElementById('servicio-form-cliente').value, 10),
+                idPlan: parseInt(document.getElementById('servicio-form-plan').value, 10),
+                idDispositivo: parseInt(document.getElementById('servicio-form-dispositivo').value, 10),
+                fechaActivacion: document.getElementById('servicio-form-fecha-activacion').value,
+                proximoPago: document.getElementById('servicio-form-proximo-pago').value,
+                estadoServicio: document.getElementById('servicio-form-estado').value,
+                descuentoMonto: parseFloat(document.getElementById('servicio-form-descuento').value)
             };
 
-            try {
-                const response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${jwtToken}`
-                    },
-                    body: JSON.stringify(body)
-                });
-
-                if (response.ok) {
-                    const successMessage = editingUserId ? '¡Usuario actualizado con éxito!' : '¡Usuario creado con éxito!';
-                    showMessage(formMessage, successMessage, 'bg-green-100 text-green-700');
-                    cancelEdit(); // Limpiar formulario y resetear estado
-                    await loadUsers(); // Recargar la lista de usuarios
-                } else {
-                    const errorData = await response.json();
-                    showMessage(formMessage, errorData.message || 'Error al guardar el usuario.', 'bg-red-100 text-red-700');
-                }
-            } catch (error) {
-                console.error('Error en handleSaveUser:', error);
-                showMessage(formMessage, 'No se pudo conectar con el servidor.', 'bg-red-100 text-red-700');
-            }
-        }
-
-        // --- Lógica para Eliminar Usuarios ---
-        async function handleDeleteUser(userId) {
-            if (!confirm(`¿Estás seguro de que quieres eliminar al usuario con ID ${userId}?`)) {
+            if (isNaN(body.idCliente) || isNaN(body.idPlan) || isNaN(body.idDispositivo)) {
+                showMessage(formMessage, 'Cliente, Plan y Dispositivo son requeridos.', 'bg-yellow-100 text-yellow-700');
                 return;
             }
 
-            try {
-                const response = await fetch(`/api/usuarios/${userId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${jwtToken}`
-                    }
-                });
+            const url = editingServicioId ? `/api/servicios/${editingServicioId}` : '/api/servicios';
+            const method = editingServicioId ? 'PUT' : 'POST';
+            if (editingServicioId) body.idServicio = editingServicioId;
 
-                if (response.ok) {
-                    showMessage(document.getElementById('user-form-message'), '¡Usuario eliminado con éxito!', 'bg-green-100 text-green-700');
-                    await loadUsers(); // Recargar la lista de usuarios
+            try {
+                const response = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` }, body: JSON.stringify(body) });
+                const result = await response.json();
+                if (result.success) {
+                    showMessage(formMessage, result.message, 'bg-green-100 text-green-700');
+                    cancelEditServicio();
+                    await loadServicios();
                 } else {
-                    const errorData = await response.json().catch(() => ({}));
-                    showMessage(document.getElementById('user-form-message'), errorData.message || 'Error al eliminar el usuario.', 'bg-red-100 text-red-700');
+                    showMessage(formMessage, result.message || 'Error al guardar.', 'bg-red-100 text-red-700');
                 }
             } catch (error) {
-                console.error('Error en handleDeleteUser:', error);
-                showMessage(document.getElementById('user-form-message'), 'No se pudo conectar con el servidor.', 'bg-red-100 text-red-700');
+                showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
             }
         }
+
+        async function handleDeleteServicio(id) {
+            if (!confirm(`¿Seguro que quieres eliminar el servicio con ID ${id}?`)) return;
+            const formMessage = document.getElementById('servicio-form-message');
+            try {
+                const response = await fetch(`/api/servicios/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                const result = await response.json();
+                if (result.success) {
+                    showMessage(formMessage, '¡Servicio eliminado!', 'bg-green-100 text-green-700');
+                    await loadServicios();
+                } else {
+                    showMessage(formMessage, result.message || 'Error al eliminar.', 'bg-red-100 text-red-700');
+                }
+            } catch (error) {
+                showMessage(formMessage, 'Error de conexión.', 'bg-red-100 text-red-700');
+            }
+        }
+
+        async function loadServicios(query = '') {
+            const listBody = document.getElementById('servicio-list-body');
+            listBody.innerHTML = '<tr><td colspan="10" class="text-center py-4">Cargando...</td></tr>';
+            
+            const url = query ? `/api/servicios/buscar?query=${encodeURIComponent(query)}` : '/api/servicios';
+
+            try {
+                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                const result = await response.json();
+                if (!result.success) throw new Error(result.message || 'Error de red.');
+                const data = result.data;
+                listBody.innerHTML = '';
+                if (data.length === 0) {
+                    listBody.innerHTML = '<tr><td colspan="10" class="text-center py-4">No hay servicios.</td></tr>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    const cliente = clientesCache.find(c => c.idCliente === item.idCliente);
+                    const clienteNombre = cliente ? `${cliente.nombre} ${cliente.apellido}` : 'N/A';
+                    const planNombre = item.plan ? item.plan.nombrePlan : 'N/A';
+                    const dispositivoNombre = item.dispositivo ? item.dispositivo.modelo : 'N/A';
+                    const dispositivoMac = item.dispositivo ? item.dispositivo.direccionMac : 'N/A';
+                    const clasificacion = item.dispositivo && clasificacionesCache.find(c => c.idClasificacion === item.dispositivo.idClasificacion);
+                    const clasificacionNombre = clasificacion ? clasificacion.nombreClasificacion : 'N/A';
+                    const proximoPagoFormateado = new Date(item.proximoPago).toLocaleDateString();
+                    const descuentoFormateado = `Q${item.descuentoMonto.toFixed(2)}`;
+                    const estadoClass = item.estadoServicio === 'ACTIVO' ? 'text-green-600' : 'text-red-600';
+                    const itemDataString = JSON.stringify(item).replace(/'/g, "'");
+
+                    listBody.innerHTML += `
+                        <tr>
+                            <td class="px-6 py-4">${item.idServicio}</td>
+                            <td class="px-6 py-4">${clienteNombre}</td>
+                            <td class="px-6 py-4">${planNombre}</td>
+                            <td class="px-6 py-4">${dispositivoNombre}</td>
+                            <td class="px-6 py-4">${dispositivoMac}</td>
+                            <td class="px-6 py-4">${clasificacionNombre}</td>
+                            <td class="px-6 py-4">${proximoPagoFormateado}</td>
+                            <td class="px-6 py-4">${descuentoFormateado}</td>
+                            <td class="px-6 py-4 font-bold ${estadoClass}">${item.estadoServicio}</td>
+                            <td class="px-6 py-4">
+                                <button onclick='startEditServicio(${itemDataString})' class="text-indigo-600 hover:text-indigo-900">Editar</button>
+                                <button onclick="handleDeleteServicio(${item.idServicio})" class="text-red-600 hover:text-red-900 ml-2">Eliminar</button>
+                            </td>
+                        </tr>`;
+                });
+            } catch (error) {
+                listBody.innerHTML = `<tr><td colspan="10" class="text-center py-4 text-red-500">${error.message || "Error al cargar datos."}</td></tr>`;
+            }
+        }
+
+
 
         // --- Lógica para Registro de Pagos ---
         let serviciosActivosCache = [];
@@ -1396,7 +1714,6 @@
                 const result = await response.json();
                 if (!result.success) throw new Error('No se pudieron cargar los servicios.');
                 
-                // Reutilizamos el cache de clientes o lo cargamos si no existe
                 if (clientesCache.length === 0) {
                     const clientesRes = await fetch('/api/clientes', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
                     const clientesResult = await clientesRes.json();
@@ -1475,7 +1792,7 @@
             const body = {
                 idServicio: idServicio,
                 monto: monto,
-                metodoPago: 'EFECTIVO', // Hardcodeado por ahora
+                metodoPago: 'EFECTIVO',
                 diasCubiertos: dias,
                 comentario: document.getElementById('comentario').value,
                 periodoInicio: fechaHoy.toISOString().split('T')[0],
@@ -1538,8 +1855,7 @@
                         </tr>`;
                 });
             } catch (error) {
-                listBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">${error.message || "Error al cargar datos."}
-</td></tr>`;
+                listBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-red-500">${error.message || "Error al cargar datos."}</td></tr>`;
             }
         }
 
@@ -1562,9 +1878,8 @@
 
         async function handleEditPagoComentario(pagoId, currentComment) {
             const newComment = prompt("Editar comentario:", currentComment);
-            if (newComment === null || newComment === currentComment) {
-                return; // No hacer nada si el usuario cancela o no cambia el texto
-            }
+            if (newComment === null || newComment === currentComment) return;
+            
             const formMessage = document.getElementById('messageBox');
             try {
                 const response = await fetch(`/api/pagos/${pagoId}/comentario`, { 
@@ -1584,13 +1899,12 @@
             }
         }
 
-
-
         // Event Listeners para el formulario de pago
         document.getElementById('tipo_pago').addEventListener('change', actualizarInterfazPago);
         document.getElementById('cliente_servicio').addEventListener('change', actualizarMontoPago);
         document.getElementById('dias_pagar').addEventListener('input', actualizarMontoPago);
-        document.querySelector('#payments-screen button[onclick="registrarPago()"]').setAttribute('onclick', 'handleRegisterPago()');
+        document.querySelector('#payments-screen button[onclick="registrarPago()"]')
+            .setAttribute('onclick', 'handleRegisterPago()');
 
     </script>
 </body>
